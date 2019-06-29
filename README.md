@@ -5,4 +5,4 @@ to track your expense and income. The app will come with a front end view that w
 simple reporting. 
 
 The goal is to create an application that can be used by people who do not want their
-transactions to be used by third pagit rties. 
+transactions to be used by third parties. 
