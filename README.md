@@ -11,3 +11,8 @@ transactions to be used by third parties.
 
 Install a mongod
 Update application.properties with mongodb uri
+
+## Usage
+1. Provide Db connection settings as per readme
+2. Start the spring boot application using IDE. 
+3. Visit localhost:8080/swagger-ui.html for the endpoints supported
