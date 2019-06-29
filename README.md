@@ -6,3 +6,8 @@ simple reporting.
 
 The goal is to create an application that can be used by people who do not want their
 transactions to be used by third parties. 
+
+## Requirements
+
+Install a mongod
+Update application.properties with mongodb uri
