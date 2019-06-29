@@ -9,8 +9,8 @@ transactions to be used by third parties.
 
 ## Requirements
 
-Install a mongod
-Update application.properties with mongodb uri
+* Install a mongod
+* Update application.properties with mongodb uri
 
 ## Usage
 1. Provide Db connection settings as per readme
