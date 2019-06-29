@@ -9,7 +9,7 @@ transactions to be used by third parties.
 
 ## Requirements
 
-* Install a mongod
+* Install a mongodb
 * Update application.properties with mongodb uri
 
 ## Usage
