@@ -14,7 +14,7 @@ public class Transaction {
     @Id
     private String id;
 
-    private int amount;
+    private double amount;
 
     private Date transacationDate;
 

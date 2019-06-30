@@ -20,8 +20,13 @@ public class BalanceController {
         return ResponseEntity.ok().body( transactionService.create(balanceAmount, TYPE));
     }
 
-    @GetMapping("balances")
+    @GetMapping("balanceTransactions")
     public List<Transaction> getAllBalanceTransactions() {
         return transactionService.getTransactionsByType(TYPE);
+    }
+
+    @GetMapping("/currentBalance")
+    public double currentBalance() {
+        return transactionService.getCurrentBalance();
     }
 }

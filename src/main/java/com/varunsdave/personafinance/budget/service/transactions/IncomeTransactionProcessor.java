@@ -17,7 +17,7 @@ public class IncomeTransactionProcessor implements TransactionProcessor {
     private final TransactionRepository transactionRepository;
 
     @Override
-    public Transaction create(int amount) {
+    public Transaction create(double amount) {
         final Transaction createdTransaction = new Transaction();
         createdTransaction.setAmount(amount);
         createdTransaction.setDescription("");
