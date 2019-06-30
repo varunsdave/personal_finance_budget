@@ -15,6 +15,8 @@ public class TransactionProcessorFactory {
                 return new IncomeTransactionProcessor(transactionRepository);
             case "expense":
                 return new ExpenseTransactionProcessor(transactionRepository);
+            case "balance":
+                return new BalanceTransactionProcessor(transactionRepository);
             default:
                 return null;
         }

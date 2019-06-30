@@ -11,7 +11,7 @@ public interface TransactionProcessor {
      * @param amount : the transaction amount
      * @return transaction object with the amount
      */
-    Transaction create(int amount);
+    Transaction create(double amount);
 
     /**
      * Deletes a transaction based on the id
