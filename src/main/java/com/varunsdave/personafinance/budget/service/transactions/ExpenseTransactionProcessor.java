@@ -21,7 +21,7 @@ public class ExpenseTransactionProcessor implements TransactionProcessor {
         final Transaction createdTransaction = new Transaction();
         createdTransaction.setAmount(amount);
         createdTransaction.setDescription("");
-        createdTransaction.setTransacationDate(new Date());
+        createdTransaction.setTransactionDate(new Date());
         createdTransaction.setType(TRANSACTION_TYPE);
         return transactionRepository.save(createdTransaction);
     }
