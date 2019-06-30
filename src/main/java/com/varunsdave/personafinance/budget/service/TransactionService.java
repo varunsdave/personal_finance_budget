@@ -13,29 +13,18 @@ import java.util.List;
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
+    private final TransactionProcessorFactory transactionProcessorFactory;
 
-    public Transaction createIncome(int amount) {
-        final Transaction newTransaction = new Transaction();
-        newTransaction.setAmount(amount);
-        newTransaction.setTransacationDate(new Date());
-        newTransaction.setDescription("");
-        newTransaction.setType("income");
-
-        return transactionRepository.save(newTransaction);
-    }
-
-    public Transaction createExpense(int amount) {
-        final Transaction newTransaction = new Transaction();
-        newTransaction.setAmount(amount);
-        newTransaction.setTransacationDate(new Date());
-        newTransaction.setDescription("");
-        newTransaction.setType("expense");
-
-        return transactionRepository.save(newTransaction);
+    public Transaction create(int amount, String type) {
+        return transactionProcessorFactory.getTransactionProcessorByType(type).create(amount);
     }
 
     public List<Transaction> getAllTransactions() {
         return transactionRepository.findAll();
+    }
+
+    public List<Transaction> getTransactionsByType(String type) {
+        return transactionProcessorFactory.getTransactionProcessorByType(type).getAll();
     }
 
 }
