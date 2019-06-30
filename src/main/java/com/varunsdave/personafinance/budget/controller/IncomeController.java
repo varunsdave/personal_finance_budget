@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/income")
@@ -15,8 +17,11 @@ public class IncomeController {
 
     @PostMapping("")
     public ResponseEntity<Transaction> createIncome(@RequestBody int incomeAmt) {
-
-        return ResponseEntity.ok().body( transactionService.createIncome(incomeAmt));
+       return ResponseEntity.ok().body( transactionService.create(incomeAmt, "income"));
     }
 
+    @GetMapping("transacations")
+    public List<Transaction> getAllIncomeTransactions() {
+        return transactionService.getTransactionsByType("income");
+    }
 }

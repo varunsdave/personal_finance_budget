@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/expense")
@@ -15,7 +17,12 @@ public class ExpenseController {
 
     @PostMapping("")
     public ResponseEntity<Transaction> createExpense(@RequestBody int expenseAmount) {
-        Transaction t = transactionService.createExpense(expenseAmount);
+        Transaction t = transactionService.create(expenseAmount, "expense");
         return ResponseEntity.ok().body(t);
+    }
+
+    @GetMapping("transacations")
+    public List<Transaction> getAllExpenseTransactions() {
+        return transactionService.getTransactionsByType("expense");
     }
 }
