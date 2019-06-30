@@ -9,14 +9,18 @@ import org.springframework.stereotype.Component;
 public class TransactionProcessorFactory {
 
     private final TransactionRepository transactionRepository;
+    private final IncomeTransactionProcessor incomeTransactionProcessor;
+    private final ExpenseTransactionProcessor expenseTransactionProcessor;
+    private final BalanceTransactionProcessor balanceTransactionProcessor;
+
     public TransactionProcessor getTransactionProcessorByType(String type) {
         switch (type) {
             case "income":
-                return new IncomeTransactionProcessor(transactionRepository);
+                return incomeTransactionProcessor;
             case "expense":
-                return new ExpenseTransactionProcessor(transactionRepository);
+                return expenseTransactionProcessor;
             case "balance":
-                return new BalanceTransactionProcessor(transactionRepository);
+                return balanceTransactionProcessor;
             default:
                 return null;
         }
