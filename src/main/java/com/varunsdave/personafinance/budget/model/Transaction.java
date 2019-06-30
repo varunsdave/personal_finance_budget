@@ -16,7 +16,7 @@ public class Transaction {
 
     private double amount;
 
-    private Date transacationDate;
+    private Date transactionDate;
 
     private String Description;
 

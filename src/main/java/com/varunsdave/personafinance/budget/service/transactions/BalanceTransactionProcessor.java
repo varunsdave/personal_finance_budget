@@ -19,7 +19,7 @@ public class BalanceTransactionProcessor implements TransactionProcessor {
     public Transaction create(double amount) {
         final Transaction transaction = new Transaction();
         transaction.setType(TRANSACTION_TYPE);
-        transaction.setTransacationDate(new Date());
+        transaction.setTransactionDate(new Date());
         transaction.setDescription("");
         transaction.setAmount(amount);
         return transactionRepository.save(transaction);
