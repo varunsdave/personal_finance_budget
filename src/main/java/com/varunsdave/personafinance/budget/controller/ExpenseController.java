@@ -1,7 +1,7 @@
 package com.varunsdave.personafinance.budget.controller;
 
 import com.varunsdave.personafinance.budget.model.Transaction;
-import com.varunsdave.personafinance.budget.service.TransactionService;
+import com.varunsdave.personafinance.budget.service.transactions.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

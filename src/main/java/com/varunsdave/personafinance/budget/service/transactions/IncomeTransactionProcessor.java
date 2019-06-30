@@ -1,4 +1,4 @@
-package com.varunsdave.personafinance.budget.service;
+package com.varunsdave.personafinance.budget.service.transactions;
 
 import com.varunsdave.personafinance.budget.model.Transaction;
 import com.varunsdave.personafinance.budget.repository.TransactionRepository;
@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Service
 @AllArgsConstructor
-public class ExpenseTransactionProcessor implements TransactionProcessor {
+@Service
+public class IncomeTransactionProcessor implements TransactionProcessor {
 
-    private final String TRANSACTION_TYPE = "expense";
+    private final String TRANSACTION_TYPE = "income";
     private final TransactionRepository transactionRepository;
 
     @Override
@@ -28,7 +28,6 @@ public class ExpenseTransactionProcessor implements TransactionProcessor {
 
     @Override
     public void delete(String id) {
-
     }
 
     @Override
@@ -46,4 +45,6 @@ public class ExpenseTransactionProcessor implements TransactionProcessor {
     public Transaction update(String id, Transaction newTransaction) {
         return null;
     }
+
+
 }
