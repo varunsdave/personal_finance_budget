@@ -22,29 +22,29 @@ public class BalanceController {
      * @param balanceAmount the new balance amount
      * @return Transaction record of the balance amount
      */
-    @PostMapping("")
+    @PostMapping("/account/{accountId}")
     @ApiOperation("Creates a record of new balance type of transaction.")
-    public ResponseEntity<Transaction> createBalance(@RequestBody int balanceAmount) {
-        return ResponseEntity.ok().body( transactionService.create(balanceAmount, TYPE));
+    public ResponseEntity<Transaction> createBalance(@PathVariable String accountId, @RequestBody int balanceAmount) {
+        return ResponseEntity.ok().body( transactionService.create(balanceAmount, accountId, TYPE));
     }
 
     /**
      * Retrieves a list of all balance updates.
      * @return List of balance transaction updates
      */
-    @GetMapping("balanceTransactions")
+    @GetMapping("balanceTransactions/account/{accountId}")
     @ApiOperation("Retrieves a list of all balance updates.")
-    public List<Transaction> getAllBalanceTransactions() {
-        return transactionService.getTransactionsByType(TYPE);
+    public List<Transaction> getAllBalanceTransactions(@PathVariable String accountId) {
+        return transactionService.getTransactionsByType(TYPE, accountId);
     }
 
     /**
      * Returns the current balance based on previous transactions
      * @return an amount representing current transaction
      */
-    @GetMapping("/currentBalance")
+    @GetMapping("/currentBalance/account/{accountId}")
     @ApiOperation("Returns the current balance based on previous transactions")
-    public double currentBalance() {
-        return transactionService.getCurrentBalance();
+    public double currentBalance(@PathVariable String accountId) {
+        return transactionService.getCurrentBalance(accountId);
     }
 }

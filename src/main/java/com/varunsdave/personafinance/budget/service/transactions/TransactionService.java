@@ -1,10 +1,12 @@
 package com.varunsdave.personafinance.budget.service.transactions;
 
 import com.varunsdave.personafinance.budget.model.Transaction;
+import com.varunsdave.personafinance.budget.repository.AccountRepository;
 import com.varunsdave.personafinance.budget.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 
 @Service
@@ -12,26 +14,33 @@ import java.util.List;
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
+    private final AccountRepository accountRepository;
     private final TransactionProcessorFactory transactionProcessorFactory;
 
-    public Transaction create(double amount, String type) {
-        return transactionProcessorFactory.getTransactionProcessorByType(type).create(amount);
+    public Transaction create(double amount, String accountId, String type) {
+        if (accountRepository.findById(accountId).isEmpty()) {
+            throw new InvalidParameterException();
+        }
+        return transactionProcessorFactory.getTransactionProcessorByType(type).create(amount, accountId);
     }
 
     public List<Transaction> getAllTransactions() {
         return transactionRepository.findAll();
     }
 
-    public List<Transaction> getTransactionsByType(String type) {
-        return transactionProcessorFactory.getTransactionProcessorByType(type).getAll();
+    public List<Transaction> getTransactionsByType(String type, String accountId) {
+        return transactionProcessorFactory.getTransactionProcessorByType(type).getAll(accountId);
     }
 
-    public double getCurrentBalance() {
-        List<Transaction> incomeAmtList = transactionProcessorFactory.getTransactionProcessorByType("income").getAll();
-        List<Transaction> expenceAmtList = transactionProcessorFactory.getTransactionProcessorByType("expense").getAll();
-        List<Transaction> balanceAmtList = transactionProcessorFactory.getTransactionProcessorByType("balance").getAll();
+    public double getCurrentBalance(final String accountId) {
+        List<Transaction> incomeAmtList = transactionProcessorFactory.getTransactionProcessorByType("income")
+                .getAll(accountId);
+        List<Transaction> expenseAmtList = transactionProcessorFactory.getTransactionProcessorByType("expense")
+                .getAll(accountId);
+        List<Transaction> balanceAmtList = transactionProcessorFactory.getTransactionProcessorByType("balance")
+                .getAll(accountId);
 
-        return getBalance(incomeAmtList, expenceAmtList, balanceAmtList);
+        return getBalance(incomeAmtList, expenseAmtList, balanceAmtList);
     }
 
     private double getBalance(List<Transaction> income, List<Transaction> expense, List<Transaction> balance) {

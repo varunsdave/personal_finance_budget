@@ -2,6 +2,7 @@ package com.varunsdave.personafinance.budget.controller;
 
 import com.varunsdave.personafinance.budget.model.Transaction;
 import com.varunsdave.personafinance.budget.service.transactions.TransactionService;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +15,16 @@ import java.util.List;
 public class IncomeController {
 
     private final TransactionService transactionService;
+    private final String TYPE = "income";
 
-    @PostMapping("")
-    public ResponseEntity<Transaction> createIncome(@RequestBody int incomeAmt) {
-       return ResponseEntity.ok().body( transactionService.create(incomeAmt, "income"));
+    @PostMapping("/account/{accountId}")
+    public ResponseEntity<Transaction> createIncome(@PathVariable String accountId, @RequestBody int incomeAmt) {
+       return ResponseEntity.ok().body( transactionService.create(incomeAmt, accountId, TYPE));
     }
 
-    @GetMapping("transacations")
-    public List<Transaction> getAllIncomeTransactions() {
-        return transactionService.getTransactionsByType("income");
+    @GetMapping("transacations/account/{accountId}")
+    @ApiOperation("Retrieve all income transactions for a given account")
+    public List<Transaction> getAllIncomeTransactions(@PathVariable String accountId) {
+        return transactionService.getTransactionsByType(TYPE, accountId);
     }
 }

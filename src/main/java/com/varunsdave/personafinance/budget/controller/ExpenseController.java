@@ -14,15 +14,16 @@ import java.util.List;
 public class ExpenseController {
 
     private final TransactionService transactionService;
+    private final String TYPE = "expense";
 
-    @PostMapping("")
-    public ResponseEntity<Transaction> createExpense(@RequestBody int expenseAmount) {
-        Transaction t = transactionService.create(expenseAmount, "expense");
+    @PostMapping("/account/{accountId}")
+    public ResponseEntity<Transaction> createExpense(@PathVariable String accountId, @RequestBody int expenseAmount) {
+        Transaction t = transactionService.create(expenseAmount, accountId, TYPE);
         return ResponseEntity.ok().body(t);
     }
 
-    @GetMapping("transacations")
-    public List<Transaction> getAllExpenseTransactions() {
-        return transactionService.getTransactionsByType("expense");
+    @GetMapping("transacations/account/{accountId}")
+    public List<Transaction> getAllExpenseTransactions(@PathVariable String accountId) {
+        return transactionService.getTransactionsByType(TYPE, accountId);
     }
 }

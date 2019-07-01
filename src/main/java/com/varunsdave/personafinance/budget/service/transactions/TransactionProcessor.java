@@ -9,9 +9,10 @@ public interface TransactionProcessor {
     /**
      * Create a new transaction for the current date and time.
      * @param amount : the transaction amount
+     * @param accountId the associated account for this transaction
      * @return transaction object with the amount
      */
-    Transaction create(double amount);
+    Transaction create(double amount, String accountId);
 
     /**
      * Deletes a transaction based on the id
@@ -23,7 +24,7 @@ public interface TransactionProcessor {
      * Used to retrieve all the transactions based on the context of the processor
      * @return a list of all tranctions
      */
-    List<Transaction>  getAll();
+    List<Transaction>  getAll(String accountId);
 
     /**
      * Updates a transaction based on the transaction id

@@ -1,6 +1,7 @@
 package com.varunsdave.personafinance.budget.model;
 
 import lombok.Data;
+import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -21,4 +22,7 @@ public class Transaction {
     private String Description;
 
     private String type;
+
+    @NonNull
+    private final String accountId;
 }
