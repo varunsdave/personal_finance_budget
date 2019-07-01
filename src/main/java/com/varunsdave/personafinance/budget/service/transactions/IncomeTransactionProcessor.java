@@ -17,8 +17,8 @@ public class IncomeTransactionProcessor implements TransactionProcessor {
     private final TransactionRepository transactionRepository;
 
     @Override
-    public Transaction create(double amount) {
-        final Transaction createdTransaction = new Transaction();
+    public Transaction create(double amount, String accountId) {
+        final Transaction createdTransaction = new Transaction(accountId);
         createdTransaction.setAmount(amount);
         createdTransaction.setDescription("");
         createdTransaction.setTransactionDate(new Date());
@@ -31,9 +31,9 @@ public class IncomeTransactionProcessor implements TransactionProcessor {
     }
 
     @Override
-    public List<Transaction> getAll() {
+    public List<Transaction> getAll(final String accountId) {
         final List<Transaction> expenseTransactions = new ArrayList<>();
-        for (final Transaction t : transactionRepository.findAll()) {
+        for (final Transaction t : transactionRepository.findByAccountId(accountId)) {
             if (t.getType().equals(TRANSACTION_TYPE)) {
                 expenseTransactions.add(t);
             }
