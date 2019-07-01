@@ -24,7 +24,7 @@ public class BalanceController {
      */
     @PostMapping("/account/{accountId}")
     @ApiOperation("Creates a record of new balance type of transaction.")
-    public ResponseEntity<Transaction> createBalance(@PathVariable String accountId, @RequestBody int balanceAmount) {
+    public ResponseEntity<Transaction> createBalance(@PathVariable String accountId, @RequestBody double balanceAmount) {
         return ResponseEntity.ok().body( transactionService.create(balanceAmount, accountId, TYPE));
     }
 

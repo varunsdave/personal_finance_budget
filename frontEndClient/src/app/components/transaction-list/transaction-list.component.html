@@ -1,0 +1,50 @@
+<div class="card my-5">
+  <div class="card-body">
+
+<!--    <form>-->
+<!--      <div class="form-group">-->
+<!--        <ul class="text-center list-inline py-3">-->
+<!--          <input type="text" class="form-control" id="amount" placeholder="Enter Transaction Amount">-->
+<!--          <li class="list-inline-item btn btn-info" (click)="addIncome()">Add Income</li>-->
+<!--          <li class="list-inline-item btn btn-info" (click)="addExpense()">Add Expense</li>-->
+<!--          <li class="list-inline-item btn btn-info" (click)="addBalance()">Add Balance</li>-->
+<!--        </ul>-->
+<!--      </div>-->
+<!--    </form>-->
+    <form [formGroup]="newTransactionForm" >
+      <div class="row">
+        <div class="col">
+          <input type="name" formControlName="transactionAmount" class="form-control" id="amount" placeholder="Enter Transaction Amount">
+        </div>
+        <div class="col">
+          <button type="sumbit" (click)="addExpense()" class="btn ntn-primary mb-2">Add Expense</button>
+        </div>
+        <div class="col">
+          <button type="sumbit" (click)="addIncome()" class="btn ntn-primary mb-2">Add Income</button>
+        </div>
+        <div class="col">
+          <button type="sumbit" (click)="addBalance()" class="btn ntn-primary mb-2">Add Balance</button>
+        </div>
+      </div>
+    </form>
+
+  <table class="table table-bordered table-striped">
+      <thead class="thead-dark">
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Date</th>
+        <th scope="col">Transaction Type</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let transaction of transactions">
+        <td>{{ transaction.id }}</td>
+        <td>{{ transaction.amount}}</td>
+        <td>{{ transaction.transactionDate}}</td>
+        <td>{{ transaction.type}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
