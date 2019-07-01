@@ -17,7 +17,7 @@ public class ExpenseController {
     private final String TYPE = "expense";
 
     @PostMapping("/account/{accountId}")
-    public ResponseEntity<Transaction> createExpense(@PathVariable String accountId, @RequestBody int expenseAmount) {
+    public ResponseEntity<Transaction> createExpense(@PathVariable String accountId, @RequestBody double expenseAmount) {
         Transaction t = transactionService.create(expenseAmount, accountId, TYPE);
         return ResponseEntity.ok().body(t);
     }
