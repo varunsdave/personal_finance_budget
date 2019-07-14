@@ -26,6 +26,11 @@ public class BalanceTransactionProcessor implements TransactionProcessor {
     }
 
     @Override
+    public Transaction create(Transaction transaction) {
+        return transactionRepository.save(transaction);
+    }
+
+    @Override
     public void delete(String id) {
 
     }

@@ -24,6 +24,13 @@ public class TransactionService {
         return transactionProcessorFactory.getTransactionProcessorByType(type).create(amount, accountId);
     }
 
+    public Transaction create(Transaction transaction, String accountId) {
+        if (accountRepository.findById(accountId).isEmpty()) {
+            throw new InvalidParameterException();
+        }
+        return transactionProcessorFactory.getTransactionProcessorByType(transaction.getType()).create(transaction);
+    }
+
     public List<Transaction> getAllTransactions() {
         return transactionRepository.findAll();
     }

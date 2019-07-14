@@ -27,6 +27,11 @@ public class ExpenseTransactionProcessor implements TransactionProcessor {
     }
 
     @Override
+    public Transaction create(Transaction transaction) {
+        return transactionRepository.save(transaction);
+    }
+
+    @Override
     public void delete(String id) {
 
     }
