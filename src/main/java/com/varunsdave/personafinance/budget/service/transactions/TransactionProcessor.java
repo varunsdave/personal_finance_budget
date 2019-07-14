@@ -15,6 +15,13 @@ public interface TransactionProcessor {
     Transaction create(double amount, String accountId);
 
     /**
+     * Creates a new transaction based on input Transaction types. Creates a new id.
+     * @param transaction transaction model
+     * @return persisted model of the transaction
+     */
+    Transaction create(Transaction transaction);
+
+    /**
      * Deletes a transaction based on the id
      * @param id the id of the transaction to be deleted
      */

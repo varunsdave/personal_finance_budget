@@ -1,0 +1,23 @@
+<div>
+  <input type="file" class="btn btn-info"  (change)="readCsvTransactionData($event.target)" accept=".xlsx,.xls,.csv" ngf-max-size="20MB">
+  <button class="btn btn-info" (click)="uploadTransactions()">Upload Transaction</button>
+</div>
+
+<table class="table table-bordered table-striped">
+  <thead class="thead-dark">
+  <tr>
+    <th scope="col">Id</th>
+    <th scope="col">Amount</th>
+    <th scope="col">Date</th>
+    <th scope="col">Transaction Type</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let transaction of transactions">
+    <td>{{ transaction.id }}</td>
+    <td>{{ transaction.amount}}</td>
+    <td>{{ transaction.transactionDate}}</td>
+    <td>{{ transaction.type}}</td>
+  </tr>
+  </tbody>
+</table>
