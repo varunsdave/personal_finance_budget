@@ -29,4 +29,8 @@ export class RestClientService {
       }
     });
   }
+
+  public getBalanceByAccount(accountId: string): Observable<number> {
+    return this.http.get<number>(this.serverUrl + 'balance/currentBalance/account/' + "5d194ce86abd454d0c32aa8b");
+  }
 }
