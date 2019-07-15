@@ -56,4 +56,10 @@ public class BalanceTransactionProcessor implements TransactionProcessor {
     public Transaction update(String id, Transaction newTransaction) {
         return null;
     }
+
+    @Override
+    public Transaction getMostRecent(String accountId) {
+        List<Transaction> transactions = transactionRepository.findByAccountIdAndType(accountId, TRANSACTION_TYPE);
+        return (transactions.size() > 0) ? transactions.get(transactions.size() - 1 ) : null;
+    }
 }

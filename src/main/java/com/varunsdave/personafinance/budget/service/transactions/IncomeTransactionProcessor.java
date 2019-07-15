@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -44,13 +45,21 @@ public class IncomeTransactionProcessor implements TransactionProcessor {
 
     @Override
     public List<Transaction> getAllAfterDate(String accountId, Date date) {
-        final List<Transaction> incomeTransactions =transactionRepository.findByAccountIdAndType(accountId, TRANSACTION_TYPE);
-        incomeTransactions.stream().filter(transaction -> transaction.getTransactionDate().compareTo(date) >= 0 );
+        final List<Transaction> incomeTransactions = transactionRepository
+                .findByAccountIdAndType(accountId, TRANSACTION_TYPE)
+                .stream()
+                .filter(transaction -> transaction.getTransactionDate().compareTo(date) >= 0 )
+                .collect(Collectors.toList());
         return incomeTransactions;
     }
 
     @Override
     public Transaction update(String id, Transaction newTransaction) {
+        return null;
+    }
+
+    @Override
+    public Transaction getMostRecent(String accountId) {
         return null;
     }
 

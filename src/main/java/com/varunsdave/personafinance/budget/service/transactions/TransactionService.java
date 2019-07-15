@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.security.InvalidParameterException;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -41,18 +42,29 @@ public class TransactionService {
     }
 
     public BigDecimal getCurrentBalance(final String accountId) {
-        List<Transaction> incomeAmtList = transactionProcessorFactory.getTransactionProcessorByType("income")
-                .getAll(accountId);
-        List<Transaction> expenseAmtList = transactionProcessorFactory.getTransactionProcessorByType("expense")
-                .getAll(accountId);
-        List<Transaction> balanceAmtList = transactionProcessorFactory.getTransactionProcessorByType("balance")
-                .getAll(accountId);
 
-        return getBalance(incomeAmtList, expenseAmtList, balanceAmtList);
+        Transaction balanceAmtList = transactionProcessorFactory.getTransactionProcessorByType("balance")
+                .getMostRecent(accountId);
+        if (balanceAmtList == null) {
+            List<Transaction> incomeAmtList = transactionProcessorFactory.getTransactionProcessorByType("income")
+                    .getAll(accountId);
+            List<Transaction> expenseAmtList = transactionProcessorFactory.getTransactionProcessorByType("expense")
+                    .getAll(accountId);
+
+            return getBalance(incomeAmtList, expenseAmtList, BigDecimal.ZERO);
+        } else {
+            List<Transaction> incomeAmtList = transactionProcessorFactory.getTransactionProcessorByType("income")
+                    .getAllAfterDate(accountId, balanceAmtList.getTransactionDate());
+            List<Transaction> expenseAmtList = transactionProcessorFactory.getTransactionProcessorByType("expense")
+                    .getAllAfterDate(accountId, balanceAmtList.getTransactionDate());
+
+            return getBalance(incomeAmtList, expenseAmtList,  balanceAmtList.getAmount());
+        }
+
     }
 
-    private BigDecimal getBalance(List<Transaction> income, List<Transaction> expense, List<Transaction> balance) {
-        BigDecimal total = sumFromList(income).subtract(sumFromList(expense));
+    private BigDecimal getBalance(List<Transaction> income, List<Transaction> expense, BigDecimal startingValue) {
+        BigDecimal total = startingValue.add(sumFromList(income)).subtract(sumFromList(expense));
         return total;
     }
 

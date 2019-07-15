@@ -48,4 +48,11 @@ public interface TransactionProcessor {
      * @return provides the updated transaction object
      */
     Transaction update(String id, Transaction newTransaction);
+
+    /**
+     * Returns the latest transaction for an account
+     * @param accountId
+     * @return newest transaction for account
+     */
+    Transaction getMostRecent(String accountId);
 }

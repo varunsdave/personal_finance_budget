@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -45,11 +47,21 @@ public class ExpenseTransactionProcessor implements TransactionProcessor {
 
     @Override
     public List<Transaction> getAllAfterDate(String accountId, Date date) {
-        return null;
+        final List<Transaction> expenseTransactions = transactionRepository
+                .findByAccountIdAndType(accountId, TRANSACTION_TYPE)
+                .stream().filter(transaction -> transaction.getTransactionDate().compareTo(date) >= 0)
+                .collect(Collectors.toList());
+
+        return expenseTransactions;
     }
 
     @Override
     public Transaction update(String id, Transaction newTransaction) {
+        return null;
+    }
+
+    @Override
+    public Transaction getMostRecent(String accountId) {
         return null;
     }
 }
