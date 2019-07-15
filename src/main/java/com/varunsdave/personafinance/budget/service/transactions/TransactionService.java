@@ -6,6 +6,7 @@ import com.varunsdave.personafinance.budget.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.security.InvalidParameterException;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class TransactionService {
         return transactionProcessorFactory.getTransactionProcessorByType(type).getAll(accountId);
     }
 
-    public double getCurrentBalance(final String accountId) {
+    public BigDecimal getCurrentBalance(final String accountId) {
         List<Transaction> incomeAmtList = transactionProcessorFactory.getTransactionProcessorByType("income")
                 .getAll(accountId);
         List<Transaction> expenseAmtList = transactionProcessorFactory.getTransactionProcessorByType("expense")
@@ -50,14 +51,15 @@ public class TransactionService {
         return getBalance(incomeAmtList, expenseAmtList, balanceAmtList);
     }
 
-    private double getBalance(List<Transaction> income, List<Transaction> expense, List<Transaction> balance) {
-        return sumFromList(income) - sumFromList(expense);
+    private BigDecimal getBalance(List<Transaction> income, List<Transaction> expense, List<Transaction> balance) {
+        BigDecimal total = sumFromList(income).subtract(sumFromList(expense));
+        return total;
     }
 
-    private double sumFromList(List<Transaction> tList) {
-        double sum = 0.0;
+    private BigDecimal sumFromList(List<Transaction> tList) {
+        BigDecimal sum = BigDecimal.ZERO;
         for (final Transaction t: tList) {
-            sum += t.getAmount();
+            sum = sum.add(t.getAmount());
         }
         return sum;
     }

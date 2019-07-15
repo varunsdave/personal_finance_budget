@@ -5,7 +5,7 @@ import com.varunsdave.personafinance.budget.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class ExpenseTransactionProcessor implements TransactionProcessor {
     @Override
     public Transaction create(double amount, String accountId) {
         final Transaction createdTransaction = new Transaction(accountId);
-        createdTransaction.setAmount(amount);
+        createdTransaction.setAmount(BigDecimal.valueOf(amount));
         createdTransaction.setDescription("");
         createdTransaction.setTransactionDate(new Date());
         createdTransaction.setType(TRANSACTION_TYPE);
@@ -38,13 +38,14 @@ public class ExpenseTransactionProcessor implements TransactionProcessor {
 
     @Override
     public List<Transaction> getAll(final String accountId) {
-        final List<Transaction> expenseTransactions = new ArrayList<>();
-        for (final Transaction t : transactionRepository.findAll()) {
-            if (t.getType().equals(TRANSACTION_TYPE)) {
-                expenseTransactions.add(t);
-            }
-        }
+        final List<Transaction> expenseTransactions =transactionRepository.findByAccountIdAndType(accountId, TRANSACTION_TYPE);
+        System.out.println(expenseTransactions.size());
         return expenseTransactions;
+    }
+
+    @Override
+    public List<Transaction> getAllAfterDate(String accountId, Date date) {
+        return null;
     }
 
     @Override

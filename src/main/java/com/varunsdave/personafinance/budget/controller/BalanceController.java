@@ -45,6 +45,6 @@ public class BalanceController {
     @GetMapping("/currentBalance/account/{accountId}")
     @ApiOperation("Returns the current balance based on previous transactions")
     public double currentBalance(@PathVariable String accountId) {
-        return transactionService.getCurrentBalance(accountId);
+        return transactionService.getCurrentBalance(accountId).doubleValue();
     }
 }

@@ -2,6 +2,7 @@ package com.varunsdave.personafinance.budget.service.transactions;
 
 import com.varunsdave.personafinance.budget.model.Transaction;
 
+import java.util.Date;
 import java.util.List;
 
 public interface TransactionProcessor {
@@ -32,6 +33,13 @@ public interface TransactionProcessor {
      * @return a list of all tranctions
      */
     List<Transaction>  getAll(String accountId);
+
+    /**
+     * Returns all transactions after a date time
+     * @param date
+     * @return
+     */
+    List<Transaction> getAllAfterDate(String accountId, Date date);
 
     /**
      * Updates a transaction based on the transaction id

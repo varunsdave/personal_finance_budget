@@ -8,8 +8,7 @@ import java.util.List;
 
 public interface TransactionRepository extends MongoRepository<Transaction, String> {
 
-    @Query("{'accountId' : 0}")
     List<Transaction> findByAccountId(final String accountId);
 
-
+    List<Transaction> findByAccountIdAndType(final String accountId, final String type);
 }

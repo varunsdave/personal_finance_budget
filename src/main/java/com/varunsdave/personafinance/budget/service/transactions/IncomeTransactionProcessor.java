@@ -5,7 +5,7 @@ import com.varunsdave.personafinance.budget.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class IncomeTransactionProcessor implements TransactionProcessor {
     @Override
     public Transaction create(double amount, String accountId) {
         final Transaction createdTransaction = new Transaction(accountId);
-        createdTransaction.setAmount(amount);
+        createdTransaction.setAmount(BigDecimal.valueOf(amount));
         createdTransaction.setDescription("");
         createdTransaction.setTransactionDate(new Date());
         createdTransaction.setType(TRANSACTION_TYPE);
@@ -37,13 +37,16 @@ public class IncomeTransactionProcessor implements TransactionProcessor {
 
     @Override
     public List<Transaction> getAll(final String accountId) {
-        final List<Transaction> expenseTransactions = new ArrayList<>();
-        for (final Transaction t : transactionRepository.findByAccountId(accountId)) {
-            if (t.getType().equals(TRANSACTION_TYPE)) {
-                expenseTransactions.add(t);
-            }
-        }
-        return expenseTransactions;
+        final List<Transaction> incomeTransactions =transactionRepository.findByAccountIdAndType(accountId, TRANSACTION_TYPE);
+        System.out.println(incomeTransactions.size());
+        return incomeTransactions;
+    }
+
+    @Override
+    public List<Transaction> getAllAfterDate(String accountId, Date date) {
+        final List<Transaction> incomeTransactions =transactionRepository.findByAccountIdAndType(accountId, TRANSACTION_TYPE);
+        incomeTransactions.stream().filter(transaction -> transaction.getTransactionDate().compareTo(date) >= 0 );
+        return incomeTransactions;
     }
 
     @Override
