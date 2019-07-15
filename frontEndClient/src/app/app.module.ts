@@ -10,12 +10,14 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { CsvUploadComponent } from './components/csv-upload/csv-upload.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FileUploadService} from "./services/file-upload-service";
+import { AccountOverviewComponent } from './components/account-overview/account-overview.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TransactionListComponent,
-    CsvUploadComponent
+    CsvUploadComponent,
+    AccountOverviewComponent
   ],
   imports: [
     BrowserModule,
