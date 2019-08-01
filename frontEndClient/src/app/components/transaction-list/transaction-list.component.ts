@@ -25,25 +25,49 @@ export class TransactionListComponent implements OnInit {
 
   createFormGroup() {
     return new FormGroup({
-      transactionAmount: new FormControl()
+      transactionAmount: new FormControl(),
+      description: new FormControl(),
+      transactionDate: new FormControl()
     })
   }
 
   public addIncome() {
+      let newTransaction: Transaction = {
+          id: "anyId",
+          type : "income",
+          amount : this.newTransactionForm.value.transactionAmount,
+          description :this.newTransactionForm.value.description,
+          transactionDate : new Date(this.newTransactionForm.value.transactionDate).toISOString()
+      }
+
       this.restClientService
-        .addTransaction("income", this.newTransactionForm.value.transactionAmount, "5d194ce86abd454d0c32aa8b")
+        .addTransaction(newTransaction, "5d194ce86abd454d0c32aa8b")
         .subscribe(t => this.transactions.push(t));
   }
 
   public addExpense() {
+    let newTransaction: Transaction = {
+      id: "anyId",
+      type : "expense",
+      amount : this.newTransactionForm.value.transactionAmount,
+      description :this.newTransactionForm.value.description,
+      transactionDate : new Date(this.newTransactionForm.value.transactionDate).toISOString()
+    }
     this.restClientService
-      .addTransaction("expense", this.newTransactionForm.value.transactionAmount, "5d194ce86abd454d0c32aa8b")
+      .addTransaction(newTransaction, "5d194ce86abd454d0c32aa8b")
       .subscribe(t => this.transactions.push(t));
   }
 
   public addBalance() {
+    let newTransaction: Transaction = {
+      id: "anyId",
+      type : "balance",
+      amount : this.newTransactionForm.value.transactionAmount,
+      description :this.newTransactionForm.value.description,
+      transactionDate : new Date(this.newTransactionForm.value.transactionDate).toISOString()
+    }
     this.restClientService
-      .addTransaction("balance", this.newTransactionForm.value.transactionAmount, "5d194ce86abd454d0c32aa8b")
+      .addTransaction(newTransaction, "5d194ce86abd454d0c32aa8b")
       .subscribe(t => this.transactions.push(t));
   }
 

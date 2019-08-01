@@ -29,8 +29,12 @@ public class IncomeTransactionProcessor implements TransactionProcessor {
 
     @Override
     public Transaction create(Transaction transaction) {
-        return transactionRepository.save(transaction);
-    }
+        final Transaction createdTransaction = new Transaction(transaction.getAccountId());
+        createdTransaction.setAmount(transaction.getAmount());
+        createdTransaction.setDescription(transaction.getDescription());
+        createdTransaction.setTransactionDate(transaction.getTransactionDate());
+        createdTransaction.setType(TRANSACTION_TYPE);
+        return transactionRepository.save(createdTransaction);   }
 
     @Override
     public void delete(String id) {

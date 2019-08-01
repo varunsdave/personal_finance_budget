@@ -4,6 +4,7 @@ import com.varunsdave.personafinance.budget.model.Transaction;
 import com.varunsdave.personafinance.budget.repository.AccountRepository;
 import com.varunsdave.personafinance.budget.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -35,6 +36,10 @@ public class TransactionService {
 
     public List<Transaction> getAllTransactions() {
         return transactionRepository.findAll();
+    }
+
+    public List<Transaction> getAllTransactionsByAccount(final String accountId) {
+        return transactionRepository.findByAccountId(accountId, new Sort(Sort.Direction.DESC, "transactionDate"));
     }
 
     public List<Transaction> getTransactionsByType(String type, String accountId) {

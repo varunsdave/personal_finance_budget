@@ -18,12 +18,17 @@ export class RestClientService {
     return this.http.post<Account[]>( this.serverUrl + '/account', accountName);
   }
 
-  public listTransactionsByAccount(accountId: string): Observable<Transaction[]> {
-    return this.http.get<Transaction[]>( this.serverUrl + '/user/testuser/transactions')
+  public listTransactionsByUser(accountId: string): Observable<Transaction[]> {
+    return this.http.get<Transaction[]>( this.serverUrl + '/user/testuser/transactions');
   }
 
-  public addTransaction(type: string, amount: number, accountId: string): Observable<Transaction> {
-    return this.http.post<Transaction>(this.serverUrl + type + '/account/' + accountId, amount, {
+  public listTransactionsByAccount(accountId: string): Observable<Transaction[]> {
+    return this.http.get<Transaction[]>( this.serverUrl + '/user/testuser/transactions/account/' + accountId);
+  }
+
+  public addTransaction(transaction: Transaction, accountId: string): Observable<Transaction> {
+    transaction.accountId = accountId;
+    return this.http.post<Transaction>(this.serverUrl + transaction.type + '/account/' + accountId, transaction, {
       headers: {
         'Content-Type': 'application/json'
       }

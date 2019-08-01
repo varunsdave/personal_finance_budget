@@ -21,4 +21,9 @@ public class UserController {
     public List<Transaction> getAllUserTransations(@PathVariable String userId) {
         return transactionService.getAllTransactions();
     }
+
+    @GetMapping("/{userId}/transactions/account/{accountId}")
+    public List<Transaction> getAllUserTransationsByAccount(@PathVariable String userId, @PathVariable String accountId) {
+        return transactionService.getAllTransactionsByAccount(accountId);
+    }
 }

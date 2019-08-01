@@ -31,8 +31,10 @@ export class FileUploadService {
         let transaction: Transaction = new Transaction();
         transaction.id = counter.toString();
         transaction.transactionDate = fields[0];
+        transaction.description = fields[1];
         transaction.amount = (fields[2] && fields[2].length > 0) ? Number(fields[2]) : Number(fields[3]);
         transaction.type = (fields[2] && fields[2].length > 0) ? "Expense" : "Income";
+
         transactions.push(transaction);
         counter++;
       }
