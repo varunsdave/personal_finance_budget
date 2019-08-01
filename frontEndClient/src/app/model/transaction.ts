@@ -3,4 +3,6 @@ export class Transaction {
   amount: number;
   transactionDate: string;
   type: string;
+  description: string;
+  accountId?: string;
 }

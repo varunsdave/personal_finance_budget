@@ -18,8 +18,8 @@ public class IncomeController {
     private final String TYPE = "income";
 
     @PostMapping("/account/{accountId}")
-    public ResponseEntity<Transaction> createIncome(@PathVariable String accountId, @RequestBody double incomeAmt) {
-       return ResponseEntity.ok().body( transactionService.create(incomeAmt, accountId, TYPE));
+    public ResponseEntity<Transaction> createIncome(@PathVariable String accountId, @RequestBody Transaction transaction) {
+       return ResponseEntity.ok().body( transactionService.create(transaction, accountId));
     }
 
     @GetMapping("transacations/account/{accountId}")

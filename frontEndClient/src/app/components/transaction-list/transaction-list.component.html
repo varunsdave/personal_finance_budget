@@ -4,7 +4,15 @@
     <form [formGroup]="newTransactionForm" >
       <div class="row">
         <div class="col">
-          <input type="name" formControlName="transactionAmount" class="form-control" id="amount" placeholder="Enter Transaction Amount">
+          <input type="name" required="true" formControlName="description" class="form-control" id="transactionDescription" placeholder="Enter Description">
+        </div>
+        <div class="col">
+          <input type="date" required="true" formControlName="transactionDate" class="form-control" id="transactionDate" placeholder="Date">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <input type="number" required="true" formControlName="transactionAmount" class="form-control" id="amount" placeholder="Enter Transaction Amount">
         </div>
         <div class="col">
           <button type="sumbit" (click)="addExpense()" class="btn ntn-primary mb-2">Add Expense</button>
@@ -21,18 +29,18 @@
   <table class="table table-bordered table-striped">
       <thead class="thead-dark">
       <tr>
-        <th scope="col">Id</th>
-        <th scope="col">Amount</th>
         <th scope="col">Date</th>
         <th scope="col">Transaction Type</th>
+        <th scope="col">Description</th>
+        <th scope="col">Amount</th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let transaction of transactions">
-        <td>{{ transaction.id }}</td>
-        <td>{{ transaction.amount}}</td>
-        <td>{{ transaction.transactionDate}}</td>
+        <td>{{ transaction.transactionDate.substr(0, 10)}}</td>
         <td>{{ transaction.type}}</td>
+        <td>{{ transaction.description }}</td>
+        <td>${{ transaction.amount}}</td>
       </tr>
       </tbody>
     </table>
