@@ -11,7 +11,16 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { CsvUploadComponent } from './components/csv-upload/csv-upload.component';
 import {FileUploadService} from "./services/file-upload-service";
 import { AccountOverviewComponent } from './components/account-overview/account-overview.component';
-import {MatButtonModule, MatCardModule, MatCheckboxModule, MatSortModule, MatTableModule} from "@angular/material";
+import {
+  MatAutocompleteModule,
+  MatButtonModule,
+  MatCardModule,
+  MatCheckboxModule,
+  MatFormFieldModule,
+  MatSortModule,
+  MatTableModule,
+  MatInputModule, MatPaginatorModule
+} from "@angular/material";
 
 @NgModule({
   declarations: [
@@ -27,11 +36,15 @@ import {MatButtonModule, MatCardModule, MatCheckboxModule, MatSortModule, MatTab
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
+    MatAutocompleteModule,
     MatButtonModule,
     MatTableModule,
     MatCheckboxModule,
     MatCardModule,
-    MatSortModule
+    MatInputModule,
+    MatSortModule,
+    MatFormFieldModule,
+    MatPaginatorModule
   ],
   providers: [RestClientService, FileUploadService],
   bootstrap: [AppComponent]
