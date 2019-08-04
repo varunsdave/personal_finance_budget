@@ -19,7 +19,7 @@ import {
   MatFormFieldModule,
   MatSortModule,
   MatTableModule,
-  MatInputModule, MatPaginatorModule
+  MatInputModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatSelectModule
 } from "@angular/material";
 
 @NgModule({
@@ -42,9 +42,12 @@ import {
     MatCheckboxModule,
     MatCardModule,
     MatInputModule,
+    MatNativeDateModule,
     MatSortModule,
     MatFormFieldModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatDatepickerModule,
+    MatSelectModule
   ],
   providers: [RestClientService, FileUploadService],
   bootstrap: [AppComponent]

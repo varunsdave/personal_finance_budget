@@ -1,13 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {Transaction} from "../../model/transaction";
 import {RestClientService} from "../../services/rest-client.service";
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatPaginator, MatSort, MatTableDataSource, Sort} from "@angular/material";
-
-export interface TransactionTableColumnDefinitions {
-  label: string;
-  transactionProperty: string;
-}
 
 @Component({
   selector: 'app-transaction-list',
@@ -21,14 +16,16 @@ export class TransactionListComponent implements OnInit {
   newTransactionForm: FormGroup;
   displayedColumns: string[];
   sortedTransaction: Transaction[] = [];
+  maxTodaysDate: Date = new Date();
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private restClientService: RestClientService) { }
+  constructor(private restClientService: RestClientService) {
+    this.newTransactionForm = this.createFormGroup();
+  }
 
   ngOnInit() {
-    this.newTransactionForm = this.createFormGroup();
     this.displayedColumns = ["Date", "Type", "Description", "Amount"];
 
     this.restClientService.listTransactionsByAccount("5d194ce86abd454d0c32aa8b")
@@ -46,48 +43,34 @@ export class TransactionListComponent implements OnInit {
     return new FormGroup({
       transactionAmount: new FormControl(),
       description: new FormControl(),
-      transactionDate: new FormControl()
+      transactionDate: new FormControl({
+        value: new Date()
+      }, Validators.required),
+      transactionType: new FormControl()
     })
   }
 
-  public addIncome() {
-      let newTransaction: Transaction = {
-          id: "anyId",
-          type : "income",
-          amount : this.newTransactionForm.value.transactionAmount,
-          description :this.newTransactionForm.value.description,
-          transactionDate : new Date(this.newTransactionForm.value.transactionDate).toISOString()
+  public submitForm() {
+    const transactionType = this.newTransactionForm.value;
+    switch (transactionType.transactionType) {
+      case 'expense': {
+        this.addExpense();
+        break;
       }
-
-      this.restClientService
-        .addTransaction(newTransaction, "5d194ce86abd454d0c32aa8b")
-        .subscribe(t => this.transactions.push(t));
-  }
-
-  public addExpense() {
-    let newTransaction: Transaction = {
-      id: "anyId",
-      type : "expense",
-      amount : this.newTransactionForm.value.transactionAmount,
-      description :this.newTransactionForm.value.description,
-      transactionDate : new Date(this.newTransactionForm.value.transactionDate).toISOString()
+      case 'income': {
+        this.addIncome();
+        break;
+      }
+      case 'balance': {
+        this.addBalance();
+        break;
+      }
+      default: {
+        this.newTransactionForm.markAsDirty();
+        break;
+      }
     }
-    this.restClientService
-      .addTransaction(newTransaction, "5d194ce86abd454d0c32aa8b")
-      .subscribe(t => this.transactions.push(t));
-  }
-
-  public addBalance() {
-    let newTransaction: Transaction = {
-      id: "anyId",
-      type : "balance",
-      amount : this.newTransactionForm.value.transactionAmount,
-      description :this.newTransactionForm.value.description,
-      transactionDate : new Date(this.newTransactionForm.value.transactionDate).toISOString()
-    }
-    this.restClientService
-      .addTransaction(newTransaction, "5d194ce86abd454d0c32aa8b")
-      .subscribe(t => this.transactions.push(t));
+    console.log(transactionType);
   }
 
   sortData(sort: Sort) {
@@ -117,6 +100,48 @@ export class TransactionListComponent implements OnInit {
       this.datasource.paginator.firstPage();
     }
   }
+
+
+  public addIncome() {
+    let newTransaction: Transaction = {
+      id: "anyId",
+      type : "income",
+      amount : this.newTransactionForm.value.transactionAmount,
+      description :this.newTransactionForm.value.description,
+      transactionDate : new Date(this.newTransactionForm.value.transactionDate).toISOString()
+    };
+
+    this.restClientService
+      .addTransaction(newTransaction, "5d194ce86abd454d0c32aa8b")
+      .subscribe(t => this.transactions.push(t));
+  }
+
+  public addExpense() {
+    let newTransaction: Transaction = {
+      id: "anyId",
+      type : "expense",
+      amount : this.newTransactionForm.value.transactionAmount,
+      description :this.newTransactionForm.value.description,
+      transactionDate : new Date(this.newTransactionForm.value.transactionDate).toISOString()
+    };
+    this.restClientService
+      .addTransaction(newTransaction, "5d194ce86abd454d0c32aa8b")
+      .subscribe(t => this.transactions.push(t));
+  }
+
+  public addBalance() {
+    let newTransaction: Transaction = {
+      id: "anyId",
+      type : "balance",
+      amount : this.newTransactionForm.value.transactionAmount,
+      description :this.newTransactionForm.value.description,
+      transactionDate : new Date(this.newTransactionForm.value.transactionDate).toISOString()
+    };
+    this.restClientService
+      .addTransaction(newTransaction, "5d194ce86abd454d0c32aa8b")
+      .subscribe(t => this.transactions.push(t));
+  }
+
 }
 function compare(a: number | string, b: number | string, isAsc: boolean) {
   return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
