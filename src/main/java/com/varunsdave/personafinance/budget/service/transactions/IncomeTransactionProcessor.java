@@ -18,16 +18,6 @@ public class IncomeTransactionProcessor implements TransactionProcessor {
     private final TransactionRepository transactionRepository;
 
     @Override
-    public Transaction create(double amount, String accountId) {
-        final Transaction createdTransaction = new Transaction(accountId);
-        createdTransaction.setAmount(BigDecimal.valueOf(amount));
-        createdTransaction.setDescription("");
-        createdTransaction.setTransactionDate(new Date());
-        createdTransaction.setType(TRANSACTION_TYPE);
-        return transactionRepository.save(createdTransaction);
-    }
-
-    @Override
     public Transaction create(Transaction transaction) {
         final Transaction createdTransaction = new Transaction(transaction.getAccountId());
         createdTransaction.setAmount(transaction.getAmount());
@@ -42,7 +32,7 @@ public class IncomeTransactionProcessor implements TransactionProcessor {
 
     @Override
     public List<Transaction> getAll(final String accountId) {
-        final List<Transaction> incomeTransactions =transactionRepository.findByAccountIdAndType(accountId, TRANSACTION_TYPE);
+        final List<Transaction> incomeTransactions = transactionRepository.findByAccountIdAndType(accountId, TRANSACTION_TYPE);
         System.out.println(incomeTransactions.size());
         return incomeTransactions;
     }

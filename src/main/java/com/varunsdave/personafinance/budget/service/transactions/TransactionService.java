@@ -20,12 +20,6 @@ public class TransactionService {
     private final AccountRepository accountRepository;
     private final TransactionProcessorFactory transactionProcessorFactory;
 
-    public Transaction create(double amount, String accountId, String type) {
-        if (accountRepository.findById(accountId).isEmpty()) {
-            throw new InvalidParameterException();
-        }
-        return transactionProcessorFactory.getTransactionProcessorByType(type).create(amount, accountId);
-    }
 
     public Transaction create(Transaction transaction, String accountId) {
         if (accountRepository.findById(accountId).isEmpty()) {

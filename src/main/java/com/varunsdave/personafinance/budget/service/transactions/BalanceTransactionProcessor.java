@@ -17,16 +17,6 @@ public class BalanceTransactionProcessor implements TransactionProcessor {
     private final TransactionRepository transactionRepository;
 
     @Override
-    public Transaction create(double amount, String accountId) {
-        final Transaction transaction = new Transaction(accountId);
-        transaction.setType(TRANSACTION_TYPE);
-        transaction.setTransactionDate(new Date());
-        transaction.setDescription("");
-        transaction.setAmount(BigDecimal.valueOf(amount));
-        return transactionRepository.save(transaction);
-    }
-
-    @Override
     public Transaction create(Transaction transaction) {
         return transactionRepository.save(transaction);
     }

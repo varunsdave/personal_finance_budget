@@ -8,14 +8,6 @@ import java.util.List;
 public interface TransactionProcessor {
 
     /**
-     * Create a new transaction for the current date and time.
-     * @param amount : the transaction amount
-     * @param accountId the associated account for this transaction
-     * @return transaction object with the amount
-     */
-    Transaction create(double amount, String accountId);
-
-    /**
      * Creates a new transaction based on input Transaction types. Creates a new id.
      * @param transaction transaction model
      * @return persisted model of the transaction

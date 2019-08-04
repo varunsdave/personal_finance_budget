@@ -19,16 +19,6 @@ public class ExpenseTransactionProcessor implements TransactionProcessor {
     private final TransactionRepository transactionRepository;
 
     @Override
-    public Transaction create(double amount, String accountId) {
-        final Transaction createdTransaction = new Transaction(accountId);
-        createdTransaction.setAmount(BigDecimal.valueOf(amount));
-        createdTransaction.setDescription("");
-        createdTransaction.setTransactionDate(new Date());
-        createdTransaction.setType(TRANSACTION_TYPE);
-        return transactionRepository.save(createdTransaction);
-    }
-
-    @Override
     public Transaction create(Transaction transaction) {
         final Transaction createdTransaction = new Transaction(transaction.getAccountId());
         createdTransaction.setAmount(transaction.getAmount());

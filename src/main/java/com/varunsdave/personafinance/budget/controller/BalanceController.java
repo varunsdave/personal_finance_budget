@@ -19,13 +19,13 @@ public class BalanceController {
     /**
      * Creates a record of new balance type of transaction. This is used to update
      * a balance for a given date.
-     * @param balanceAmount the new balance amount
+     * @param balanceTransaction the new balance amount
      * @return Transaction record of the balance amount
      */
     @PostMapping("/account/{accountId}")
     @ApiOperation("Creates a record of new balance type of transaction.")
-    public ResponseEntity<Transaction> createBalance(@PathVariable String accountId, @RequestBody double balanceAmount) {
-        return ResponseEntity.ok().body( transactionService.create(balanceAmount, accountId, TYPE));
+    public ResponseEntity<Transaction> createBalance(@PathVariable String accountId, @RequestBody Transaction balanceTransaction) {
+        return ResponseEntity.ok().body( transactionService.create(balanceTransaction, accountId));
     }
 
     /**
