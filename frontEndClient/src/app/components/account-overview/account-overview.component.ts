@@ -9,10 +9,12 @@ import {RestClientService} from "../../services/rest-client.service";
 export class AccountOverviewComponent implements OnInit {
 
   balance: number;
+  accountName: string;
 
   constructor(private restClientService: RestClientService) { }
 
   ngOnInit() {
+    this.accountName = "Sample Test Account";
     this.restClientService.getBalanceByAccount('').subscribe((data) => {
       this.balance = data;
     })
