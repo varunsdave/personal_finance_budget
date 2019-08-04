@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {Transaction} from "../../model/transaction";
 import {RestClientService} from "../../services/rest-client.service";
 import {FormControl, FormGroup} from "@angular/forms";
-import {MatSort, MatTableDataSource, Sort} from "@angular/material";
+import {MatPaginator, MatSort, MatTableDataSource, Sort} from "@angular/material";
 
 export interface TransactionTableColumnDefinitions {
   label: string;
@@ -23,6 +23,7 @@ export class TransactionListComponent implements OnInit {
   sortedTransaction: Transaction[] = [];
 
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private restClientService: RestClientService) { }
 
@@ -36,6 +37,7 @@ export class TransactionListComponent implements OnInit {
         this.sortedTransaction = transactions;
         this.datasource =  new MatTableDataSource(this.sortedTransaction);
         this.datasource.sort = this.sort;
+        this.datasource.paginator = this.paginator;
 
     });
   }
@@ -107,6 +109,13 @@ export class TransactionListComponent implements OnInit {
     });
 
     this.datasource = new MatTableDataSource(this.sortedTransaction);
+  }
+
+  applyFilter(filterValue: string) {
+    this.datasource.filter = filterValue.trim().toLowerCase();
+    if (this.datasource.paginator) {
+      this.datasource.paginator.firstPage();
+    }
   }
 }
 function compare(a: number | string, b: number | string, isAsc: boolean) {
