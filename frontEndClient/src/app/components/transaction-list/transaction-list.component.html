@@ -1,31 +1,64 @@
 <div>
-  <div class="card-body">
+  <form class="example-form" [formGroup]="newTransactionForm" (ngSubmit)="submitForm()">
+    <table cellspacing="0">
+      <tr>
+        <td>
+          <mat-form-field>
+            <input matInput [required]="true"  formControlName="transactionDate" [matDatepicker]="datepicker" placeholder="Choose transaction date" [max]="maxTodaysDate"  >
+            <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+            <mat-datepicker #datepicker disabled="false"></mat-datepicker>
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field>
+            <mat-label>Transaction Type</mat-label>
+            <mat-select required formControlName="transactionType">
+              <mat-option value="income">Income</mat-option>
+              <mat-option value="expense">Expense</mat-option>
+              <mat-option value="balance">Balance Update</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field>
+            <input matInput [required]="true" formControlName="transactionAmount" type="number" [min]="0" placeholder="Enter Amount">
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <mat-form-field>
+            <input matInput placeholder="Short Description" formControlName="description" [required]="true" maxlength="80">
+          </mat-form-field>
+        </td>
+        <td>
+          <div>
+            <button mat-raised-button [color]="primary">Add Transaction</button>
+          </div>
+        </td>
+      </tr>
+    </table>
+<!--    <mat-form-field>-->
+<!--      <input matInput placeholder="Short Description" formControlName="description" [required]="true" maxlength="80">-->
+<!--    </mat-form-field>-->
+<!--    <mat-form-field>-->
+<!--      <input matInput [required]="true"  formControlName="transactionDate" [matDatepicker]="datepicker" placeholder="Choose transaction date" [max]="maxTodaysDate"  >-->
+<!--      <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>-->
+<!--      <mat-datepicker #datepicker disabled="false"></mat-datepicker>-->
+<!--    </mat-form-field>-->
+<!--    <mat-form-field>-->
+<!--      <mat-label>Transaction Type</mat-label>-->
+<!--      <mat-select required formControlName="transactionType">-->
+<!--        <mat-option value="income">Income</mat-option>-->
+<!--        <mat-option value="expense">Expense</mat-option>-->
+<!--        <mat-option value="balance">Balance Update</mat-option>-->
+<!--      </mat-select>-->
+<!--    </mat-form-field>-->
+<!--    <mat-form-field>-->
+<!--      <input matInput [required]="true" formControlName="transactionAmount" type="number" [min]="0" placeholder="Enter Amount">-->
+<!--    </mat-form-field>-->
 
-        <form [formGroup]="newTransactionForm" >
-          <div class="row">
-            <div class="col">
-              <input type="name" required="true" formControlName="description" class="form-control" id="transactionDescription" placeholder="Enter Description">
-            </div>
-            <div class="col">
-              <input type="date" required="true" formControlName="transactionDate" class="form-control" id="transactionDate" placeholder="Date">
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <input type="number" required="true" formControlName="transactionAmount" class="form-control" id="amount" placeholder="Enter Transaction Amount">
-            </div>
-            <div class="col">
-              <button type="sumbit" (click)="addExpense()" class="btn ntn-primary mb-2">Add Expense</button>
-            </div>
-            <div class="col">
-              <button type="sumbit" (click)="addIncome()" class="btn ntn-primary mb-2">Add Income</button>
-            </div>
-            <div class="col">
-              <button type="sumbit" (click)="addBalance()" class="btn ntn-primary mb-2">Add Balance</button>
-            </div>
-          </div>
-        </form>
-  </div>
+  </form>
   <div class="example-container mat-elevation-z8">
     <mat-form-field>
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
