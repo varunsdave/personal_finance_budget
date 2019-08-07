@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Transaction} from "../model/transaction";
+import {Account} from "../model/account";
 
 @Injectable()
 export class RestClientService {
@@ -10,12 +11,12 @@ export class RestClientService {
   constructor(private http: HttpClient) {
   }
 
-  public getAccounts(): Observable<any> {
-    return this.http.get(this.serverUrl + '/account');
+  public getAccounts(): Observable<Account[]> {
+    return this.http.get<Account[]>(this.serverUrl + 'account/');
   }
 
-  public createAccount(accountName: string): Observable<Account[]> {
-    return this.http.post<Account[]>( this.serverUrl + '/account', accountName);
+  public createAccount(account: Account): Observable<Account> {
+    return this.http.post<Account>( this.serverUrl + 'account/', account);
   }
 
   public listTransactionsByUser(accountId: string): Observable<Transaction[]> {

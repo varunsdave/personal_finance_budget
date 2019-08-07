@@ -19,15 +19,17 @@ import {
   MatFormFieldModule,
   MatSortModule,
   MatTableModule,
-  MatInputModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatSelectModule
+  MatInputModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatSelectModule, MatRadioModule
 } from "@angular/material";
+import { AddAccountComponent } from './components/add-account/add-account.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TransactionListComponent,
     CsvUploadComponent,
-    AccountOverviewComponent
+    AccountOverviewComponent,
+    AddAccountComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +49,8 @@ import {
     MatFormFieldModule,
     MatPaginatorModule,
     MatDatepickerModule,
-    MatSelectModule
+    MatSelectModule,
+    MatRadioModule
   ],
   providers: [RestClientService, FileUploadService],
   bootstrap: [AppComponent]
