@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/account/")
@@ -15,8 +17,14 @@ public class AccountController {
 
     @PostMapping("")
     @ApiOperation("Creates an account with the specified id")
-    public Account createAccount(@RequestBody String name) {
-        return accountService.create(name);
+    public Account createAccount(@RequestBody Account account) {
+        return accountService.create(account);
+    }
+
+    @GetMapping("")
+    @ApiOperation("Retrieves all accounts")
+    public List<Account> getAccounts() {
+        return accountService.getAccounts();
     }
 
 

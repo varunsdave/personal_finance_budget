@@ -18,4 +18,8 @@ public class Account {
     Date createdAt;
 
     Date lastUpdated;
+
+    String bank;
+
+    String purpose;
 }
