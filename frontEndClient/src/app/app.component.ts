@@ -6,5 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
+  routerNav = ['Account Overview', 'Accounts', 'Transactions'];
   title = 'Track expenses and Balances';
 }
