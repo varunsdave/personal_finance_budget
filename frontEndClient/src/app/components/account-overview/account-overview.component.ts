@@ -29,6 +29,13 @@ export class AccountOverviewComponent implements OnInit {
     [new Date('2019-08-15'), 3900],
     [new Date('2019-08-16'), 4000]
   ];
+
+  transactionCategories = [
+    ['Savings Transfer', 100],
+    ['Credit card 1', 20],
+    ['Credit card 2', 40],
+    ['Car', 40]
+  ];
   accountList: Account[];
   fillerNav = ['Account Overview', 'Accounts', 'Transactions'];
   columnNames = ['Date', 'Balance'];

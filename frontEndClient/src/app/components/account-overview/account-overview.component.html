@@ -2,21 +2,42 @@
   <mat-label>Select Account</mat-label>
   <mat-select required name="account_info" (selectionChange)="selectAccount(selectedAccount)" [(ngModel)]="selectedAccount">
     <mat-option *ngFor="let account of accountList" [value]="account.id">{{account.name}}</mat-option>
-<!--    <mat-option value="income">Income</mat-option>-->
-<!--    <mat-option value="expense">Expense</mat-option>-->
-<!--    <mat-option value="balance">Balance Update</mat-option>-->
   </mat-select>
 </mat-form-field>
-<mat-card class="mat-card">
-  <mat-card-header >
-    <mat-card-title>{{accountName}} Balance</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <p class="mat-card-content">
-      Account Balance = {{balance}}
-    </p>
-  </mat-card-content>
-</mat-card>
-<div class="chart-area">
-  <google-chart class="chart-area" [title]="'Account Balance Over Time'" [type]="'LineChart'" [data]="dailyBalance" [columnNames]="columnNames"></google-chart>
+<div class="data-container">
+  <div>
+  <mat-card class="mat-card">
+    <mat-card-header >
+      <mat-card-title>{{accountName}} Balance</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p class="mat-card-content">
+        Account Balance = {{balance}}
+      </p>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="mat-card">
+    <mat-card-header >
+      <mat-card-title>Current Month Summary</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p class="mat-card-content"> Current Month Expense = {{balance}} </p>
+      <p class="mat-card-content"> Current Month Income = {{balance}} </p>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="mat-card">
+    <mat-card-header >
+      <mat-card-title>Previous Month Summary</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p class="mat-card-content"> Previous Month Expenses = {{balance}} </p>
+      <p class="mat-card-content"> Previous Month Income = {{balance}} </p>
+    </mat-card-content>
+  </mat-card>
+  </div>
+  <div class="chart-area">
+    <google-chart class="chart-area" [title]="'Account Balance Over Time'" [type]="'LineChart'" [data]="dailyBalance" [columnNames]="columnNames"></google-chart>
+    <google-chart class="chart-area" [title]="'Transactions Category Breakdown'" [type]="'PieChart'" [data]="transactionCategories" [columnNames]="columnNames" ></google-chart>
+  </div>
 </div>
