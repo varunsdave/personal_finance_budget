@@ -1,6 +1,19 @@
 .chart-area {
   margin: 10px;
-  width: 80%;
+  width: 95%;
+  display: flex;
+  flex-direction: row;
+}
+
+.data-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-card {
+  //max-width: 300px;
+  margin: 20px;
+  float:left;
 }
 
 .example-container {
