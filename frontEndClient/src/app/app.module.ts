@@ -19,9 +19,16 @@ import {
   MatFormFieldModule,
   MatSortModule,
   MatTableModule,
-  MatInputModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatSelectModule, MatRadioModule
+  MatInputModule,
+  MatPaginatorModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MatSelectModule,
+  MatRadioModule,
+  MatToolbarModule, MatSidenavModule, MatIconModule, MatListModule
 } from "@angular/material";
 import { AddAccountComponent } from './components/add-account/add-account.component';
+import {GoogleChartsModule} from "angular-google-charts";
 
 @NgModule({
   declarations: [
@@ -50,7 +57,12 @@ import { AddAccountComponent } from './components/add-account/add-account.compon
     MatPaginatorModule,
     MatDatepickerModule,
     MatSelectModule,
-    MatRadioModule
+    MatRadioModule,
+    GoogleChartsModule.forRoot(),
+    MatToolbarModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule
   ],
   providers: [RestClientService, FileUploadService],
   bootstrap: [AppComponent]

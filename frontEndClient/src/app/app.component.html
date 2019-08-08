@@ -1,18 +1,17 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="card bg-dark my-1">
-        <div class="card-body">
-          <h2 class="card-title text-center text-white py-1">{{ title }}</h2>
-          <ul class="text-center list-inline py-1">
-            <li class="list-inline-item"><a routerLink="/transactions" class="btn btn-info">List Transactions</a></li>
-            <li class="list-inline-item"><a routerLink="/account" class="btn btn-info">Add account</a></li>
-            <li class="list-inline-item"><a routerLink="/uploadcsv" class="btn btn-info">Upload CSV</a></li>
-            <li class="list-inline-item"><a routerLink="/accountoverview" class="btn btn-info">Account Overview</a> </li>
-          </ul>
-        </div>
-      </div>
-      <router-outlet></router-outlet>
-    </div>
-  </div>
+<div>
+  <mat-toolbar color="primary" class="example-toolbar">
+    <h1 class="example-app-name">Personal Finance Overview</h1>
+  </mat-toolbar>
+  <mat-sidenav-container class="example-container">
+    <mat-sidenav #sidenav mode="side" opened class="example-sidenav">
+      <mat-nav-list>
+        <a mat-list-item routerLink="/accountoverview">Account Overview</a>
+        <a mat-list-item routerLink="/transactions">List Transactions</a>
+        <a mat-list-item routerLink="/account">Accounts</a>
+        <a mat-list-item routerLink="/uploadcsv">Upload CSV</a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <router-outlet></router-outlet>
+  </mat-sidenav-container>
 </div>
+
