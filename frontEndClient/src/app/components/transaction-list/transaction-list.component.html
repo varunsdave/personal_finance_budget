@@ -40,9 +40,13 @@
     </table>
   </form>
   <div class="example-container mat-elevation-z8">
-    <mat-form-field>
+    <div class="filter-form">
+
+    <mat-form-field >
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
     </mat-form-field>
+    <button mat-button color="primary" (click)="createNewGroupFromFilter($event.target.value)">Create Category</button>
+    </div>
     <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
     <table mat-table [dataSource]="datasource" matSort (matSortChange)="sortData($event)">
 

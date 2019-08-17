@@ -2,6 +2,12 @@ table {
   width: 100%;
 }
 
+.filter-form {
+  display: flex;
+  margin: 10px;
+  flex-direction: row;
+}
+
 th.mat-sort-header-sorted {
   color: black;
 }

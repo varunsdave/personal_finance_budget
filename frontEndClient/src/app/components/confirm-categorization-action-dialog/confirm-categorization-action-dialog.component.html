@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Confirm</h1>
+<div mat-dialog-content>
+  <p>Please confirm you have finished categorizing the transactions. </p>
+  <p>Failing to properly categorize may cause issues with category charts. </p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button matDialogClose="true" cdkFocusInitial>Ok</button>
+</div>
