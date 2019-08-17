@@ -10,3 +10,9 @@ export class Transaction {
   accountBalance?: number;
   category?: TransactionCategory;
 }
+
+
+export class UpdateCategory {
+  uiCategory: TransactionCategory;
+  transactionIds: string[];
+}

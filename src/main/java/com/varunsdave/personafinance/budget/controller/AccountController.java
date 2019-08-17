@@ -27,5 +27,4 @@ public class AccountController {
         return accountService.getAccounts();
     }
 
-
 }

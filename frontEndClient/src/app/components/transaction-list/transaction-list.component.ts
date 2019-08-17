@@ -1,9 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Transaction} from "../../model/transaction";
+import {Transaction, UpdateCategory} from "../../model/transaction";
 import {RestClientService} from "../../services/rest-client.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatDialog, MatPaginator, MatSort, MatTableDataSource, Sort} from "@angular/material";
 import {CreateNewCategoryDialogComponent} from "../create-new-category-dialog/create-new-category-dialog.component";
+import {Account} from "../../model/account";
 
 @Component({
   selector: 'app-transaction-list',
@@ -12,12 +13,17 @@ import {CreateNewCategoryDialogComponent} from "../create-new-category-dialog/cr
 })
 export class TransactionListComponent implements OnInit {
 
+  showAddNewTransactionForm: boolean;
   transactions: Transaction[]= [];
   datasource: MatTableDataSource<Transaction>;
   newTransactionForm: FormGroup;
   displayedColumns: string[];
+  selectedAccount: Account;
   sortedTransaction: Transaction[] = [];
   maxTodaysDate: Date = new Date();
+  accountList: Account[];
+
+  accountId: string = "5d194ce86abd454d0c32aa8b";
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -28,9 +34,14 @@ export class TransactionListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.displayedColumns = ["Date", "Type", "Description", "Amount"];
+    this.displayedColumns = ["Date", "Type", "Description", "Amount", "Category"];
+    this.restClientService.getAccounts().subscribe((accounts) => {
+      this.accountList = accounts;
+    })
+  }
 
-    this.restClientService.listTransactionsByAccount("5d194ce86abd454d0c32aa8b")
+  selectAccount(selectedAccountId) {
+    this.restClientService.listTransactionsByAccount(selectedAccountId)
       .subscribe( transactions => {
         this.transactions = transactions;
         this.sortedTransaction = transactions;
@@ -53,6 +64,7 @@ export class TransactionListComponent implements OnInit {
   }
 
   public submitForm() {
+
     const transactionType = this.newTransactionForm.value;
     switch (transactionType.transactionType) {
       case 'expense': {
@@ -72,6 +84,7 @@ export class TransactionListComponent implements OnInit {
         break;
       }
     }
+    this.showAddNewTransactionForm = false;
     console.log(transactionType);
   }
 
@@ -114,11 +127,24 @@ export class TransactionListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result !== null) {
+        const transactionIds: string[] = [];
         this.datasource.filteredData.map((transaction) => {
           transaction.category = result;
+          transactionIds.push(transaction.id);
+          return transaction;
+        });
+
+        const categoryUpdate: UpdateCategory = {
+          uiCategory: result,
+          transactionIds: transactionIds
+        };
+
+        this.restClientService.updateTransactionsCategory(categoryUpdate, this.accountId).subscribe((updatedTransactions) => {
+
         });
         this.transactions = this.datasource.data;
         this.datasource = new MatTableDataSource(this.transactions)
+
       }
     });
   }
@@ -162,6 +188,10 @@ export class TransactionListComponent implements OnInit {
     this.restClientService
       .addTransaction(newTransaction, "5d194ce86abd454d0c32aa8b")
       .subscribe(t => this.transactions.push(t));
+  }
+
+  public showAddTransactionForm() {
+    this.showAddNewTransactionForm = true;
   }
 
 }

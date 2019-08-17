@@ -20,13 +20,7 @@ public class FileUploadService {
     private final TransactionService transactionService;
 
     public List<Transaction> processFile(List<UiTransaction> fileContents, String accountId) {
-
-//        List<Transaction> transactions = fileContents.stream()
-//                .map((transaction) -> transactionService.create(transaction, accountId))
-//                .collect(Collectors.toList());
-
         List<Transaction> transactions = transactionService.uploadTransactions(fileContents, accountId);
-
         return transactions;
     }
 
