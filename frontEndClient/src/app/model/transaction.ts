@@ -5,4 +5,5 @@ export class Transaction {
   type: string;
   description: string;
   accountId?: string;
+  accountBalance?: number;
 }

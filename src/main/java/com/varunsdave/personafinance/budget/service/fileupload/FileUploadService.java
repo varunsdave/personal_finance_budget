@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,14 +21,11 @@ public class FileUploadService {
 
     public List<Transaction> processFile(List<UiTransaction> fileContents, String accountId) {
 
-        List<Transaction> transactions = fileContents.stream().map((transaction) -> {
-            Transaction t = new Transaction(accountId);
-            t.setDescription(transaction.getDescription());
-            t.setType(transaction.getType().toLowerCase());
-            t.setAmount(BigDecimal.valueOf(transaction.getAmount()));
-            t.setTransactionDate(new Date(transaction.getTransactionDate()));
-            return transactionService.create(t, accountId);
-        }).collect(Collectors.toList());
+//        List<Transaction> transactions = fileContents.stream()
+//                .map((transaction) -> transactionService.create(transaction, accountId))
+//                .collect(Collectors.toList());
+
+        List<Transaction> transactions = transactionService.uploadTransactions(fileContents, accountId);
 
         return transactions;
     }

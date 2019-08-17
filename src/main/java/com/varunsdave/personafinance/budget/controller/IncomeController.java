@@ -1,6 +1,7 @@
 package com.varunsdave.personafinance.budget.controller;
 
 import com.varunsdave.personafinance.budget.model.Transaction;
+import com.varunsdave.personafinance.budget.model.UiTransaction;
 import com.varunsdave.personafinance.budget.service.transactions.TransactionService;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ public class IncomeController {
     private final String TYPE = "income";
 
     @PostMapping("/account/{accountId}")
-    public ResponseEntity<Transaction> createIncome(@PathVariable String accountId, @RequestBody Transaction transaction) {
+    public ResponseEntity<Transaction> createIncome(@PathVariable String accountId, @RequestBody UiTransaction transaction) {
        return ResponseEntity.ok().body( transactionService.create(transaction, accountId));
     }
 

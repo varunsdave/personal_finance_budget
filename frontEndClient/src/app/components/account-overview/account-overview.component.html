@@ -16,13 +16,13 @@
       </p>
     </mat-card-content>
   </mat-card>
-  <mat-card class="mat-card">
+  <mat-card class="mat-card" *ngIf="dailyBalance.length > 0">
     <mat-card-header >
       <mat-card-title>Current Month Summary</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <p class="mat-card-content"> Current Month Expense = {{balance}} </p>
-      <p class="mat-card-content"> Current Month Income = {{balance}} </p>
+      <p class="mat-card-content"> Current Month Expense = {{currentMonthExpense}} </p>
+      <p class="mat-card-content"> Current Month Income = {{currentMonthIncome}} </p>
     </mat-card-content>
   </mat-card>
 
@@ -36,7 +36,7 @@
     </mat-card-content>
   </mat-card>
   </div>
-  <div class="chart-area">
+  <div class="chart-area" *ngIf="dailyBalance.length > 0">
     <google-chart class="chart-area" [title]="'Account Balance Over Time'" [type]="'LineChart'" [data]="dailyBalance" [columnNames]="columnNames"></google-chart>
     <google-chart class="chart-area" [title]="'Transactions Category Breakdown'" [type]="'PieChart'" [data]="transactionCategories" [columnNames]="columnNames" ></google-chart>
   </div>

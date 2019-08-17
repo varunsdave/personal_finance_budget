@@ -11,23 +11,9 @@ export class AccountOverviewComponent implements OnInit {
   balance: number;
   accountName: string;
   selectedAccount: Account;
+  currentMonthExpense: number = 0;
+  currentMonthIncome: number = 0;
   dailyBalance = [
-    [new Date('2019-08-01'), 2500],
-    [new Date('2019-08-02'), 2600],
-    [new Date('2019-08-03'), 2700],
-    [new Date('2019-08-04'), 2800],
-    [new Date('2019-08-05'), 2900],
-    [new Date('2019-08-06'), 3000],
-    [new Date('2019-08-07'), 3100],
-    [new Date('2019-08-08'), 3200],
-    [new Date('2019-08-09'), 3300],
-    [new Date('2019-08-10'), 3400],
-    [new Date('2019-08-11'), 3500],
-    [new Date('2019-08-12'), 3600],
-    [new Date('2019-08-13'), 3700],
-    [new Date('2019-08-14'), 3800],
-    [new Date('2019-08-15'), 3900],
-    [new Date('2019-08-16'), 4000]
   ];
 
   transactionCategories = [
@@ -50,11 +36,36 @@ export class AccountOverviewComponent implements OnInit {
     this.restClientService.getAccounts().subscribe((accounts) => {
       this.accountList = accounts;
     })
+
   }
 
   selectAccount(selectedAccountId) {
     this.restClientService.getBalanceByAccount(selectedAccountId).subscribe((data) => {
       this.balance = data;
+    })
+    this.restClientService.listTransactionsByAccount(selectedAccountId).subscribe((transactions) => {
+      this.dailyBalance = [];
+      const today: Date = new Date();
+      const currentYear: number = today.getFullYear();
+      const currentMonth: number = today.getMonth();
+      this.currentMonthExpense = transactions.filter((t) => {
+        return t.type === "expense"
+          && new Date(t.transactionDate).getFullYear() === currentYear
+          && new Date(t.transactionDate).getMonth() === currentMonth
+      }).map(items => items.amount)
+        .reduce((prev, current) => prev + current, 0);
+
+      this.currentMonthIncome = transactions.filter((t) => {
+        return t.type === "income"
+          && new Date(t.transactionDate).getFullYear() === currentYear
+          && new Date(t.transactionDate).getMonth() === currentMonth
+      }).map(items => items.amount)
+        .reduce((prev, current) => prev + current, 0);
+
+      transactions.forEach((t) => {
+        this.dailyBalance.push([new Date(t.transactionDate), t.accountBalance]);
+      })
+
     })
   }
 
