@@ -2,7 +2,8 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {Transaction} from "../../model/transaction";
 import {RestClientService} from "../../services/rest-client.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {MatPaginator, MatSort, MatTableDataSource, Sort} from "@angular/material";
+import {MatDialog, MatPaginator, MatSort, MatTableDataSource, Sort} from "@angular/material";
+import {CreateNewCategoryDialogComponent} from "../create-new-category-dialog/create-new-category-dialog.component";
 
 @Component({
   selector: 'app-transaction-list',
@@ -21,7 +22,8 @@ export class TransactionListComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private restClientService: RestClientService) {
+  constructor(private restClientService: RestClientService,
+              public dialog: MatDialog) {
     this.newTransactionForm = this.createFormGroup();
   }
 
@@ -99,6 +101,26 @@ export class TransactionListComponent implements OnInit {
     if (this.datasource.paginator) {
       this.datasource.paginator.firstPage();
     }
+  }
+
+  createNewGroupFromFilter(filterValue: string) {
+    const dialogRef = this.dialog.open(CreateNewCategoryDialogComponent, {
+      width: '500px',
+      data: {
+        filter: this.datasource.filter,
+        shortDescription: ''
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result !== null) {
+        this.datasource.filteredData.map((transaction) => {
+          transaction.category = result;
+        });
+        this.transactions = this.datasource.data;
+        this.datasource = new MatTableDataSource(this.transactions)
+      }
+    });
   }
 
 

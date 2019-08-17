@@ -22,5 +22,7 @@ public class UiTransaction {
 
     private String type;
 
-    private double balance;
+    private double accountBalance;
+
+    private UiCategory category;
 }

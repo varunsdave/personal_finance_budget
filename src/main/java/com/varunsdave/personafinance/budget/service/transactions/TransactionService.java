@@ -54,6 +54,8 @@ public class TransactionService {
             t.setType(uiTransaction.getType());
             t.setId(UUID.randomUUID().toString());
             t.setTransactionDate(uiTransaction.getTransactionDate());
+            t.setCategoryFilter(uiTransaction.getCategory().getFilter());
+            t.setCategoryName(uiTransaction.getCategory().getShortDescription());
             return t;
         }).collect(Collectors.toList());
         // if first transaction the

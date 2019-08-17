@@ -8,7 +8,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {RestClientService} from './services/rest-client.service';
 import { TransactionListComponent } from './components/transaction-list/transaction-list.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { CsvUploadComponent } from './components/csv-upload/csv-upload.component';
+import {CsvUploadComponent} from './components/csv-upload/csv-upload.component';
 import {FileUploadService} from "./services/file-upload-service";
 import { AccountOverviewComponent } from './components/account-overview/account-overview.component';
 import {
@@ -25,10 +25,12 @@ import {
   MatNativeDateModule,
   MatSelectModule,
   MatRadioModule,
-  MatToolbarModule, MatSidenavModule, MatIconModule, MatListModule
+  MatToolbarModule, MatSidenavModule, MatIconModule, MatListModule, MatDialogModule
 } from "@angular/material";
 import { AddAccountComponent } from './components/add-account/add-account.component';
 import {GoogleChartsModule} from "angular-google-charts";
+import { ConfirmCategorizationActionDialogComponent } from './components/confirm-categorization-action-dialog/confirm-categorization-action-dialog.component';
+import { CreateNewCategoryDialogComponent } from './components/create-new-category-dialog/create-new-category-dialog.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import {GoogleChartsModule} from "angular-google-charts";
     TransactionListComponent,
     CsvUploadComponent,
     AccountOverviewComponent,
-    AddAccountComponent
+    AddAccountComponent,
+    ConfirmCategorizationActionDialogComponent,
+    CreateNewCategoryDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -62,8 +66,10 @@ import {GoogleChartsModule} from "angular-google-charts";
     MatToolbarModule,
     MatSidenavModule,
     MatIconModule,
-    MatListModule
+    MatListModule,
+    MatDialogModule
   ],
+  entryComponents: [ConfirmCategorizationActionDialogComponent, CreateNewCategoryDialogComponent],
   providers: [RestClientService, FileUploadService],
   bootstrap: [AppComponent]
 })

@@ -1,0 +1,24 @@
+table {
+  width: 100%;
+}
+.filter-form {
+  display: flex;
+  margin: 10px;
+  flex-direction: row;
+}
+
+.example-container {
+  height: 100%;
+  overflow: auto;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}

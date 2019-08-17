@@ -26,6 +26,10 @@ public class Transaction {
 
     private String type;
 
+    private String categoryFilter;
+
+    private String categoryName;
+
     @NonNull
     private final String accountId;
 }

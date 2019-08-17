@@ -36,6 +36,13 @@ export class RestClientService {
     });
   }
 
+  public addNewCategory(category: string, transactions: Transaction[], accountId: string) {
+    this.http.post(this.serverUrl + '/account/category/', {
+      category: category,
+      transactions: transactions
+    } );
+  }
+
   public getBalanceByAccount(accountId: string): Observable<number> {
     const actId = (accountId.length < 1) ? "5d194ce86abd454d0c32aa8b" : accountId + "/";
     return this.http.get<number>(this.serverUrl + 'balance/currentBalance/account/' + actId);

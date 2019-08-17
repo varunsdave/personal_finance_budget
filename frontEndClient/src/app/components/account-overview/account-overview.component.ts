@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {RestClientService} from "../../services/rest-client.service";
 import {Account} from "../../model/account";
+import * as _ from 'lodash';
+
 @Component({
   selector: 'app-account-overview',
   templateUrl: './account-overview.component.html',
@@ -17,10 +19,6 @@ export class AccountOverviewComponent implements OnInit {
   ];
 
   transactionCategories = [
-    ['Savings Transfer', 100],
-    ['Credit card 1', 20],
-    ['Credit card 2', 40],
-    ['Car', 40]
   ];
   accountList: Account[];
   fillerNav = ['Account Overview', 'Accounts', 'Transactions'];
@@ -30,9 +28,6 @@ export class AccountOverviewComponent implements OnInit {
 
   ngOnInit() {
     this.accountName = "Sample Test Account";
-    // this.restClientService.getBalanceByAccount('').subscribe((data) => {
-    //   this.balance = data;
-    // })
     this.restClientService.getAccounts().subscribe((accounts) => {
       this.accountList = accounts;
     })
@@ -42,9 +37,9 @@ export class AccountOverviewComponent implements OnInit {
   selectAccount(selectedAccountId) {
     this.restClientService.getBalanceByAccount(selectedAccountId).subscribe((data) => {
       this.balance = data;
-    })
+    });
     this.restClientService.listTransactionsByAccount(selectedAccountId).subscribe((transactions) => {
-      this.dailyBalance = [];
+
       const today: Date = new Date();
       const currentYear: number = today.getFullYear();
       const currentMonth: number = today.getMonth();
@@ -61,12 +56,36 @@ export class AccountOverviewComponent implements OnInit {
           && new Date(t.transactionDate).getMonth() === currentMonth
       }).map(items => items.amount)
         .reduce((prev, current) => prev + current, 0);
-
+      this.dailyBalance = [];
       transactions.forEach((t) => {
         this.dailyBalance.push([new Date(t.transactionDate), t.accountBalance]);
-      })
+      });
+
+      let groupings: {
+        [key: string]: number
+      } = _.countBy(transactions, (t) =>  {
+        if (t.category.shortDescription === "") {
+          return "Other";
+        } else {
+          return  t.category.shortDescription;
+        }
+      });
+      let sorted = _.chain(groupings)
+        .map((count, group) => {
+          return {
+            group: group,
+            count: count
+          };
+        })
+        .sortBy('count')
+        .reverse()
+        .value();
+      this.transactionCategories = sorted.map((item) => {
+        return [item.group, item.count];
+      });
 
     })
   }
 
 }
+

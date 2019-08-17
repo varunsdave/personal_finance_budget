@@ -31,8 +31,12 @@ export class FileUploadService {
         let transaction: Transaction = new Transaction();
         transaction.id = counter.toString();
         transaction.transactionDate = new Date(fields[0]).toISOString();
-        transaction.description = fields[1];
+        transaction.description = fields[1].replace( /  +/g, ' ' )  ;
         transaction.amount = (fields[2] && fields[2].length > 0) ? Number(fields[2]) : Number(fields[3]);
+        transaction.category = {
+          filter: "",
+          shortDescription: ""
+        };
         transaction.type = (fields[2] && fields[2].length > 0) ? "expense" : "income";
 
         transactions.push(transaction);
