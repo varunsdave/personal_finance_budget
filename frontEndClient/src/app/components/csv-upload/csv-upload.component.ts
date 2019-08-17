@@ -12,6 +12,9 @@ import {
 } from "@angular/material";
 import {ConfirmCategorizationActionDialogComponent} from "../confirm-categorization-action-dialog/confirm-categorization-action-dialog.component";
 import {CreateNewCategoryDialogComponent} from "../create-new-category-dialog/create-new-category-dialog.component";
+import {FormControl, FormGroup} from "@angular/forms";
+import {Account} from "../../model/account";
+import {RestClientService} from "../../services/rest-client.service";
 
 @Component({
   selector: 'app-csv-upload',
@@ -20,18 +23,37 @@ import {CreateNewCategoryDialogComponent} from "../create-new-category-dialog/cr
 })
 export class CsvUploadComponent implements OnInit {
 
+  uploadCsvForm: FormGroup;
+
+  fileUploadCtrl: FormControl;
+
   transactions: Transaction[] = [];
   datasource: MatTableDataSource<Transaction>;
   sortedTransaction: Transaction[] = [];
   displayedColumns: string[];
+
+  selectedAccount: Account;
+  accountList: Account[];
+
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private fileUploadService: FileUploadService,
+              private restClientService: RestClientService,
               public dialog: MatDialog) { }
 
   ngOnInit() {
     this.displayedColumns = ["Date", "Type", "Description", "Amount", "Category"];
+    this.restClientService.getAccounts().subscribe((accounts) => {
+      this.accountList = accounts;
+    });
+    this.uploadCsvForm = this.setupUploadFileForm();
+  }
+
+  selectAccount(selectedAccountId) {
+    this.restClientService.listTransactionsByAccount(selectedAccountId)
+      .subscribe( transactions => {
+      });
   }
 
   readCsvTransactionData(event) {
@@ -50,7 +72,13 @@ export class CsvUploadComponent implements OnInit {
     }
   }
 
+
+
   uploadTransactions() {
+    if (this.transactions.length === 0) {
+      this.uploadCsvForm.markAsDirty();
+      return;
+    }
     const dialogRef= this.dialog.open(ConfirmCategorizationActionDialogComponent, {
       width: '500px',
       data: false
@@ -58,7 +86,7 @@ export class CsvUploadComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.fileUploadService.uploadTransactions(this.transactions, "5d194ce86abd454d0c32aa8b").subscribe(data => {
+        this.fileUploadService.uploadTransactions(this.transactions, this.uploadCsvForm.value.accountName).subscribe(data => {
           this.transactions = data;
           this.sortedTransaction = data;
           this.datasource = new MatTableDataSource(this.sortedTransaction);
@@ -118,6 +146,15 @@ export class CsvUploadComponent implements OnInit {
     });
   }
 
+  submitForm() {
+  }
+
+  private setupUploadFileForm(): FormGroup {
+    return new FormGroup({
+      accountName: new FormControl(),
+      fileUploadCtrl: new FormControl()
+    });
+  }
 
 }
 

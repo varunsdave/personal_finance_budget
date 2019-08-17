@@ -16,9 +16,21 @@ table {
   font-size: 14px;
   width: 100%;
 }
+.form-group-wrapper {
+  margin: 10px;
+  flex-direction: row;
+  display: flex;
+  .select-account-upload-csv {
+    max-width: 50%;
+  }
+
+
+}
+
 
 .example-form {
   min-width: 150px;
   max-width: 500px;
   width: 100%;
 }
+

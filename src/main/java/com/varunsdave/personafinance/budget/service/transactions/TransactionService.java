@@ -1,6 +1,7 @@
 package com.varunsdave.personafinance.budget.service.transactions;
 
 import com.varunsdave.personafinance.budget.model.Transaction;
+import com.varunsdave.personafinance.budget.model.UiCategory;
 import com.varunsdave.personafinance.budget.model.UiTransaction;
 import com.varunsdave.personafinance.budget.repository.AccountRepository;
 import com.varunsdave.personafinance.budget.repository.TransactionRepository;
@@ -10,9 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.security.InvalidParameterException;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -44,9 +43,22 @@ public class TransactionService {
         return transactionProcessorFactory.getTransactionProcessorByType(type).getAll(accountId);
     }
 
-    public List<Transaction> uploadTransactions(List<UiTransaction> transactionList, String accountId) {
-        Transaction lastTransaction = transactionRepository.findByAccountId(accountId, new Sort(Sort.Direction.DESC, "transactionDate")).get(0);
+    public List<Transaction> updateTransactionCategory(String accountId, List<String> transactionIds, UiCategory category) {
+        List<Transaction> dbTransactions = transactionRepository.findByIdIn(transactionIds);
+        dbTransactions.stream().map(dbTransaction ->  {
+            dbTransaction.setCategoryName(category.getShortDescription());
+            dbTransaction.setCategoryFilter(category.getFilter());
+            return dbTransaction;
+        }).collect(Collectors.toList());
+        transactionRepository.saveAll(dbTransactions);
+        return dbTransactions;
+    };
 
+    public List<Transaction> uploadTransactions(List<UiTransaction> transactionList, String accountId) {
+
+        // insert middle documents
+        Transaction lastTransaction = transactionRepository.
+                findTopByAccountIdAndTransactionDateIsLessThanEqual(accountId, transactionList.get(0).getTransactionDate());
         List<Transaction> convertedList = transactionList.stream().map((uiTransaction) -> {
             Transaction t = new Transaction(accountId);
             t.setAmount(BigDecimal.valueOf(uiTransaction.getAmount()));
@@ -54,10 +66,11 @@ public class TransactionService {
             t.setType(uiTransaction.getType());
             t.setId(UUID.randomUUID().toString());
             t.setTransactionDate(uiTransaction.getTransactionDate());
-            t.setCategoryFilter(uiTransaction.getCategory().getFilter());
-            t.setCategoryName(uiTransaction.getCategory().getShortDescription());
+            t.setCategoryFilter(uiTransaction.getCategory().getFilter().trim().toLowerCase());
+            t.setCategoryName(uiTransaction.getCategory().getShortDescription().trim().toLowerCase());
             return t;
         }).collect(Collectors.toList());
+
         // if first transaction the
         if (lastTransaction == null) {
             lastTransaction = new Transaction(accountId);
@@ -78,7 +91,27 @@ public class TransactionService {
             }
         }
 
+        // all later documents;
+        List<Transaction> existingDocuments = transactionRepository.findByAccountIdAndTransactionDateIsGreaterThanEqual(accountId, convertedList.get(convertedList.size()-1).getTransactionDate());
+
+        if (!existingDocuments.isEmpty()) {
+            for (Transaction t: existingDocuments) {
+                if (t.getType().equals("income")) {
+                    t.setAccountBalance(previousBalance.add(t.getAmount()));
+                    previousBalance = t.getAccountBalance();
+                } else if (t.getType().equals("expense")) {
+                    t.setAccountBalance(previousBalance.subtract(t.getAmount()));
+                    previousBalance = t.getAccountBalance();
+                } else  {
+                    previousBalance = t.getAccountBalance();
+                }
+            }
+        }
+
+        convertedList.addAll(existingDocuments);
+
         transactionRepository.saveAll(convertedList);
+
         return convertedList;
     }
 

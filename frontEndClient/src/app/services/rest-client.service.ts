@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Transaction} from "../model/transaction";
+import {Transaction, UpdateCategory} from "../model/transaction";
 import {Account} from "../model/account";
 
 @Injectable()
@@ -46,5 +46,13 @@ export class RestClientService {
   public getBalanceByAccount(accountId: string): Observable<number> {
     const actId = (accountId.length < 1) ? "5d194ce86abd454d0c32aa8b" : accountId + "/";
     return this.http.get<number>(this.serverUrl + 'balance/currentBalance/account/' + actId);
+  }
+
+  public updateTransactionsCategory(updateCategory: UpdateCategory, accountId: string): Observable<Transaction[]>  {
+    return this.http.put<Transaction[]>(this.serverUrl + 'user/testuser/transactionsCategory/account/'+ accountId, updateCategory,{
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   }
 }

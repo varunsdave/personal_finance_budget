@@ -1,11 +1,19 @@
-<div>
-  <input type="file" class="btn btn-info"  (change)="readCsvTransactionData($event.target)" accept=".xlsx,.xls,.csv" ngf-max-size="20MB">
-  <button class="btn btn-info" (click)="uploadTransactions()">Upload Transaction</button>
+<div class="form-group-wrapper">
+  <form class="example-form" [formGroup]="uploadCsvForm" (ngSubmit)="uploadTransactions()">
+    <input #csvInput  hidden="true" type="file" (change)="readCsvTransactionData($event.target)" accept=".xlsx,.xls,.csv" ngf-max-size="20MB">
+    <button required mat-flat-button color="primary" style="margin-right: 10px" (click)="csvInput.click()">Select Csv File</button>
+    <mat-form-field class="select-account-upload-csv">
+      <mat-label>Select Account</mat-label>
+      <mat-select required formControlName="accountName">
+        <mat-option *ngFor="let account of accountList" [value]="account.id">{{account.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-button color="primary">Upload</button>
+  </form>
 </div>
 
 <div class="example-container mat-elevation-z8">
   <div class="filter-form">
-
     <mat-form-field >
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
     </mat-form-field>
@@ -43,23 +51,3 @@
     <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
   </table>
 </div>
-<!--<table class="table table-bordered table-striped">-->
-<!--  <thead class="thead-dark">-->
-<!--  <tr>-->
-<!--    <th scope="col">Id</th>-->
-<!--    <th scope="col">Amount</th>-->
-<!--    <th scope="col">Date</th>-->
-<!--    <th scope="col">Transaction Type</th>-->
-<!--    <th scope="col">Description</th>-->
-<!--  </tr>-->
-<!--  </thead>-->
-<!--  <tbody>-->
-<!--  <tr *ngFor="let transaction of transactions">-->
-<!--    <td>{{ transaction.id }}</td>-->
-<!--    <td>{{ transaction.amount}}</td>-->
-<!--    <td>{{ transaction.transactionDate}}</td>-->
-<!--    <td>{{ transaction.type}}</td>-->
-<!--    <td>{{ transaction.description}}</td>-->
-<!--  </tr>-->
-<!--  </tbody>-->
-<!--</table>-->
