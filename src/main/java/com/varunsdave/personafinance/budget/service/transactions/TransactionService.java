@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -24,11 +25,55 @@ public class TransactionService {
     private final TransactionProcessorFactory transactionProcessorFactory;
 
 
-    public Transaction create(UiTransaction transaction, String accountId) {
+
+    public Transaction create(UiTransaction uiTransaction, String accountId) {
         if (accountRepository.findById(accountId).isEmpty()) {
             throw new InvalidParameterException();
         }
-        return transactionProcessorFactory.getTransactionProcessorByType(transaction.getType()).create(transaction, accountId);
+        final Transaction t = convertFromUiTransaction(uiTransaction, accountId);
+        // get last transaction from that date
+        final List<Transaction> transactions = transactionRepository.findByAccountIdAndTransactionDateIsGreaterThanEqual(accountId, uiTransaction.getTransactionDate());
+        final Transaction previousTransactions = transactionRepository.findTopByAccountIdAndTransactionDateIsLessThanEqual(accountId, uiTransaction.getTransactionDate());
+
+        if (previousTransactions == null) {
+            // this is the first transaction
+            BigDecimal accountBalance = t.getType().equals("income") ? BigDecimal.valueOf(uiTransaction.getAmount()) :
+                    t.getType().equals("expense") ? BigDecimal.valueOf(uiTransaction.getAmount()).multiply(BigDecimal.valueOf(-1.0)) :
+                            t.getAmount();
+            t.setAccountBalance(accountBalance);
+        } else {
+            BigDecimal accountBalance = t.getType().equals("income") ? previousTransactions.getAccountBalance().add(BigDecimal.valueOf(uiTransaction.getAmount())) :
+                    t.getType().equals("expense") ? previousTransactions.getAccountBalance().subtract(BigDecimal.valueOf(uiTransaction.getAmount()).multiply(BigDecimal.valueOf(-1.0))) :
+                            t.getAmount();
+            t.setAccountBalance(accountBalance);
+        }
+
+        BigDecimal previousBalance = t.getAccountBalance();
+
+        for (Transaction trns: transactions) {
+            if (trns.getType().equals("income")) {
+                trns.setAccountBalance(previousBalance.add(trns.getAmount()));
+                previousBalance = trns.getAccountBalance();
+            } else if (trns.getType().equals("expense")) {
+                trns.setAccountBalance(previousBalance.subtract(trns.getAmount()));
+                previousBalance = trns.getAccountBalance();
+            } else  {
+                previousBalance = trns.getAccountBalance();
+            }
+        }
+
+        final List<Transaction> updatedTransactions = new ArrayList<>();
+        updatedTransactions.add(t);
+        updatedTransactions.addAll(transactions);
+        transactionRepository.saveAll(updatedTransactions);
+        return t;
+
+        // add this to current transactions
+
+
+        // get and update all transactions after this date.
+
+//        return transactionProcessorFactory.getTransactionProcessorByType(uiTransaction.getType()).create(uiTransaction, accountId);
     }
 
     public List<Transaction> getAllTransactions() {
@@ -44,7 +89,7 @@ public class TransactionService {
     }
 
     public List<Transaction> updateTransactionCategory(String accountId, List<String> transactionIds, UiCategory category) {
-        List<Transaction> dbTransactions = transactionRepository.findByIdIn(transactionIds);
+        List<Transaction> dbTransactions = transactionRepository.findByIdInAndAccountId(transactionIds, accountId);
         dbTransactions.stream().map(dbTransaction ->  {
             dbTransaction.setCategoryName(category.getShortDescription());
             dbTransaction.setCategoryFilter(category.getFilter());
@@ -59,17 +104,9 @@ public class TransactionService {
         // insert middle documents
         Transaction lastTransaction = transactionRepository.
                 findTopByAccountIdAndTransactionDateIsLessThanEqual(accountId, transactionList.get(0).getTransactionDate());
-        List<Transaction> convertedList = transactionList.stream().map((uiTransaction) -> {
-            Transaction t = new Transaction(accountId);
-            t.setAmount(BigDecimal.valueOf(uiTransaction.getAmount()));
-            t.setDescription(uiTransaction.getDescription());
-            t.setType(uiTransaction.getType());
-            t.setId(UUID.randomUUID().toString());
-            t.setTransactionDate(uiTransaction.getTransactionDate());
-            t.setCategoryFilter(uiTransaction.getCategory().getFilter().trim().toLowerCase());
-            t.setCategoryName(uiTransaction.getCategory().getShortDescription().trim().toLowerCase());
-            return t;
-        }).collect(Collectors.toList());
+        List<Transaction> convertedList = transactionList.stream()
+                .map((uiTransaction) -> convertFromUiTransaction(uiTransaction, accountId))
+                .collect(Collectors.toList());
 
         // if first transaction the
         if (lastTransaction == null) {
@@ -153,6 +190,18 @@ public class TransactionService {
             sum = sum.add(t.getAmount());
         }
         return sum;
+    }
+
+    private Transaction convertFromUiTransaction(UiTransaction uiTransaction, String accountId) {
+        Transaction t = new Transaction(accountId);
+        t.setAmount(BigDecimal.valueOf(uiTransaction.getAmount()));
+        t.setDescription(uiTransaction.getDescription());
+        t.setType(uiTransaction.getType());
+        t.setId(UUID.randomUUID().toString());
+        t.setTransactionDate(uiTransaction.getTransactionDate());
+        t.setCategoryFilter(uiTransaction.getCategory().getFilter().trim().toLowerCase());
+        t.setCategoryName(uiTransaction.getCategory().getShortDescription().trim().toLowerCase());
+        return t;
     }
 
 }

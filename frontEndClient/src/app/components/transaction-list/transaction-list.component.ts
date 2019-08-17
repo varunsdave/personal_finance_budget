@@ -18,7 +18,7 @@ export class TransactionListComponent implements OnInit {
   datasource: MatTableDataSource<Transaction>;
   newTransactionForm: FormGroup;
   displayedColumns: string[];
-  selectedAccount: Account;
+  selectedAccountId: string;
   sortedTransaction: Transaction[] = [];
   maxTodaysDate: Date = new Date();
   accountList: Account[];
@@ -41,6 +41,7 @@ export class TransactionListComponent implements OnInit {
   }
 
   selectAccount(selectedAccountId) {
+    this.selectedAccountId = selectedAccountId;
     this.restClientService.listTransactionsByAccount(selectedAccountId)
       .subscribe( transactions => {
         this.transactions = transactions;
@@ -156,11 +157,15 @@ export class TransactionListComponent implements OnInit {
       type : "income",
       amount : this.newTransactionForm.value.transactionAmount,
       description :this.newTransactionForm.value.description,
-      transactionDate : new Date(this.newTransactionForm.value.transactionDate).toISOString()
+      transactionDate : new Date(this.newTransactionForm.value.transactionDate).toISOString(),
+      category: {
+        filter: '',
+        shortDescription: ''
+      }
     };
 
     this.restClientService
-      .addTransaction(newTransaction, "5d194ce86abd454d0c32aa8b")
+      .addTransaction(newTransaction, this.selectedAccountId)
       .subscribe(t => this.transactions.push(t));
   }
 
@@ -169,11 +174,15 @@ export class TransactionListComponent implements OnInit {
       id: "anyId",
       type : "expense",
       amount : this.newTransactionForm.value.transactionAmount,
-      description :this.newTransactionForm.value.description,
-      transactionDate : new Date(this.newTransactionForm.value.transactionDate).toISOString()
+      description : this.newTransactionForm.value.description,
+      transactionDate : new Date(this.newTransactionForm.value.transactionDate).toISOString(),
+      category: {
+        filter: '',
+        shortDescription: ''
+      }
     };
     this.restClientService
-      .addTransaction(newTransaction, "5d194ce86abd454d0c32aa8b")
+      .addTransaction(newTransaction, this.selectedAccountId)
       .subscribe(t => this.transactions.push(t));
   }
 
@@ -183,10 +192,14 @@ export class TransactionListComponent implements OnInit {
       type : "balance",
       amount : this.newTransactionForm.value.transactionAmount,
       description :this.newTransactionForm.value.description,
-      transactionDate : new Date(this.newTransactionForm.value.transactionDate).toISOString()
+      transactionDate : new Date(this.newTransactionForm.value.transactionDate).toISOString(),
+      category: {
+        filter: '',
+        shortDescription: ''
+      }
     };
     this.restClientService
-      .addTransaction(newTransaction, "5d194ce86abd454d0c32aa8b")
+      .addTransaction(newTransaction, this.selectedAccountId)
       .subscribe(t => this.transactions.push(t));
   }
 

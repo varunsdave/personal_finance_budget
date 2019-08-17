@@ -12,7 +12,7 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
 
     List<Transaction> findByAccountId(final String accountId);
 
-    List<Transaction> findByIdIn(List<String> ids);
+    List<Transaction> findByIdInAndAccountId(List<String> ids, final String accountId);
 
     List<Transaction> findByAccountId(final String accountId, final Sort sort);
 
