@@ -6,6 +6,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 
+import java.util.Date;
+
 @Data
 public class UiTransaction {
 
@@ -14,9 +16,11 @@ public class UiTransaction {
 
     private double amount;
 
-    private String transactionDate;
+    private Date transactionDate;
 
     private String Description;
 
     private String type;
+
+    private double balance;
 }

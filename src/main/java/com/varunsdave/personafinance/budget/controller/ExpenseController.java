@@ -1,6 +1,7 @@
 package com.varunsdave.personafinance.budget.controller;
 
 import com.varunsdave.personafinance.budget.model.Transaction;
+import com.varunsdave.personafinance.budget.model.UiTransaction;
 import com.varunsdave.personafinance.budget.service.transactions.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class ExpenseController {
     private final String TYPE = "expense";
 
     @PostMapping("/account/{accountId}")
-    public ResponseEntity<Transaction> createExpense(@PathVariable String accountId, @RequestBody Transaction transaction) {
+    public ResponseEntity<Transaction> createExpense(@PathVariable String accountId, @RequestBody UiTransaction transaction) {
         Transaction t = transactionService.create(transaction, accountId);
         return ResponseEntity.ok().body(t);
     }

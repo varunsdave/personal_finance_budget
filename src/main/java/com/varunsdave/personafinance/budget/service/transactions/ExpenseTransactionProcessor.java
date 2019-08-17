@@ -1,8 +1,10 @@
 package com.varunsdave.personafinance.budget.service.transactions;
 
 import com.varunsdave.personafinance.budget.model.Transaction;
+import com.varunsdave.personafinance.budget.model.UiTransaction;
 import com.varunsdave.personafinance.budget.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,12 +21,18 @@ public class ExpenseTransactionProcessor implements TransactionProcessor {
     private final TransactionRepository transactionRepository;
 
     @Override
-    public Transaction create(Transaction transaction) {
-        final Transaction createdTransaction = new Transaction(transaction.getAccountId());
-        createdTransaction.setAmount(transaction.getAmount());
+    public Transaction create(UiTransaction transaction, String accountId) {
+        final Transaction createdTransaction = new Transaction(accountId);
+        createdTransaction.setAmount(BigDecimal.valueOf(transaction.getAmount()));
         createdTransaction.setDescription(transaction.getDescription());
         createdTransaction.setTransactionDate(transaction.getTransactionDate());
         createdTransaction.setType(TRANSACTION_TYPE);
+        final List<Transaction> previousTransactions = transactionRepository.findByAccountId(accountId,  new Sort(Sort.Direction.DESC, "transactionDate"));
+        if (previousTransactions.isEmpty()) {
+            createdTransaction.setAccountBalance(createdTransaction.getAmount());
+        } else {
+            createdTransaction.setAccountBalance(previousTransactions.get(0).getAccountBalance().subtract(createdTransaction.getAmount()));
+        }
         return transactionRepository.save(createdTransaction);
     }
 

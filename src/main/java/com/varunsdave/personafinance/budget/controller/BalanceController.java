@@ -1,6 +1,7 @@
 package com.varunsdave.personafinance.budget.controller;
 
 import com.varunsdave.personafinance.budget.model.Transaction;
+import com.varunsdave.personafinance.budget.model.UiTransaction;
 import com.varunsdave.personafinance.budget.service.transactions.TransactionService;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ public class BalanceController {
      */
     @PostMapping("/account/{accountId}")
     @ApiOperation("Creates a record of new balance type of transaction.")
-    public ResponseEntity<Transaction> createBalance(@PathVariable String accountId, @RequestBody Transaction balanceTransaction) {
+    public ResponseEntity<Transaction> createBalance(@PathVariable String accountId, @RequestBody UiTransaction balanceTransaction) {
         return ResponseEntity.ok().body( transactionService.create(balanceTransaction, accountId));
     }
 
@@ -47,4 +48,5 @@ public class BalanceController {
     public double currentBalance(@PathVariable String accountId) {
         return transactionService.getCurrentBalance(accountId).doubleValue();
     }
+    
 }
