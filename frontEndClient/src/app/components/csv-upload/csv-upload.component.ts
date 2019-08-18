@@ -12,9 +12,10 @@ import {
 } from "@angular/material";
 import {ConfirmCategorizationActionDialogComponent} from "../confirm-categorization-action-dialog/confirm-categorization-action-dialog.component";
 import {CreateNewCategoryDialogComponent} from "../create-new-category-dialog/create-new-category-dialog.component";
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Account} from "../../model/account";
 import {RestClientService} from "../../services/rest-client.service";
+import {CsvFileMetadata} from "../../model/csvFileMetadata";
 
 @Component({
   selector: 'app-csv-upload',
@@ -24,14 +25,26 @@ import {RestClientService} from "../../services/rest-client.service";
 export class CsvUploadComponent implements OnInit {
 
   uploadCsvForm: FormGroup;
+  firstRowHeader: FormControl;
+  debitCreditTogether: FormControl;
+  dateColumn: FormControl;
+  descriptionColumn: FormControl;
+  amountColumn: FormControl;
+  debitColumn: FormControl;
+  creditColumn: FormControl;
 
-  fileUploadCtrl: FormControl;
+
+
+  showSingleAmountInput: boolean;
+  showMetadataFormSections: boolean;
+  fileParseComplete: boolean;
 
   transactions: Transaction[] = [];
   datasource: MatTableDataSource<Transaction>;
   sortedTransaction: Transaction[] = [];
   displayedColumns: string[];
 
+  fileContents: string;
   selectedAccount: Account;
   accountList: Account[];
 
@@ -48,33 +61,53 @@ export class CsvUploadComponent implements OnInit {
       this.accountList = accounts;
     });
     this.uploadCsvForm = this.setupUploadFileForm();
-  }
-
-  selectAccount(selectedAccountId) {
-    this.restClientService.listTransactionsByAccount(selectedAccountId)
-      .subscribe( transactions => {
-      });
+    this.showSingleAmountInput = false;
+    this.showMetadataFormSections = false;
+    this.fileParseComplete = false;
   }
 
   readCsvTransactionData(event) {
     if(event && event.files) {
       let file: File = event.files.item(0);
       console.log("clicked on choose file: " + file.name);
+      this.showMetadataFormSections = true;
       let fileReader: FileReader = new FileReader();
       fileReader.readAsText(file);
       fileReader.onload = (data) => {
-        let csv: string = fileReader.result as string;
-        console.log(csv);
-        this.transactions = this.fileUploadService.readFile(csv);
-        this.sortedTransaction = this.transactions;
-        this.datasource = new MatTableDataSource(this.sortedTransaction);
+        this.fileContents = fileReader.result as string;;
       }
     }
   }
 
+  parseFileAndPreview() {
+    if (!this.uploadCsvForm.valid) {
+      window.alert('please input all values');
+      return;
+    }
+    if (this.showMetadataFormSections) {
+      let csv: string = this.fileContents;
+      console.log(csv);
+      const csvFileMetadata: CsvFileMetadata = {
+        firstRowHeader: this.uploadCsvForm.value.firstRowHeader,
+        descriptionColumn: this.uploadCsvForm.value.descriptionColumn,
+        dateColumn: this.uploadCsvForm.value.dateColumn,
+        debitCreditTogether: this.uploadCsvForm.value.debitCreditTogether,
+        amountMetadata: {
+          debitColumn: (this.uploadCsvForm.value.debitCreditTogether) ? this.uploadCsvForm.value.amountColumn : this.uploadCsvForm.value.debitColumn,
+          creditColumn: (this.uploadCsvForm.value.debitCreditTogether) ? this.uploadCsvForm.value.amountColumn : this.uploadCsvForm.value.creditColumn
+        }
+      };
+      this.transactions = this.fileUploadService.readFile(csv, csvFileMetadata);
+      this.sortedTransaction = this.transactions;
+      this.datasource = new MatTableDataSource(this.sortedTransaction);
 
+      this.showMetadataFormSections = false;
+      this.fileParseComplete = true;
+    }
+  }
 
   uploadTransactions() {
+
     if (this.transactions.length === 0) {
       this.uploadCsvForm.markAsDirty();
       return;
@@ -146,13 +179,33 @@ export class CsvUploadComponent implements OnInit {
     });
   }
 
-  submitForm() {
+  public incomeExpenseCheckboxChange(n) {
+    this.showSingleAmountInput = n;
+    if (this.showSingleAmountInput) {
+      this.uploadCsvForm.controls.debitColumn.setValidators(Validators.nullValidator);
+      this.uploadCsvForm.controls.debitColumn.disable();
+      this.uploadCsvForm.controls.creditColumn.setValidators(Validators.nullValidator);
+      this.uploadCsvForm.controls.creditColumn.disable();
+      this.uploadCsvForm.controls.amountColumn.setValidators(Validators.required);
+    } else {
+      this.uploadCsvForm.controls.debitColumn.setValidators(Validators.required);
+      this.uploadCsvForm.controls.creditColumn.setValidators(Validators.required);
+      this.uploadCsvForm.controls.amountColumn.setValidators(Validators.nullValidator);
+    }
+
   }
 
   private setupUploadFileForm(): FormGroup {
     return new FormGroup({
       accountName: new FormControl(),
-      fileUploadCtrl: new FormControl()
+      fileUploadCtrl: new FormControl(),
+      firstRowHeader: new FormControl(),
+      debitCreditTogether: new FormControl(),
+      dateColumn: new FormControl(),
+      descriptionColumn: new FormControl(),
+      amountColumn: new FormControl(),
+      debitColumn: new FormControl(),
+      creditColumn: new FormControl()
     });
   }
 
@@ -161,4 +214,3 @@ export class CsvUploadComponent implements OnInit {
 function compare(a: number | string, b: number | string, isAsc: boolean) {
   return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }
-
