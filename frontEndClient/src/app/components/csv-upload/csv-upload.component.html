@@ -8,7 +8,27 @@
         <mat-option *ngFor="let account of accountList" [value]="account.id">{{account.name}}</mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-button color="primary">Upload</button>
+    <button *ngIf="fileParseComplete" mat-button color="primary">Upload</button>
+    <div *ngIf="showMetadataFormSections">
+      <mat-checkbox class="example-margin" formControlName="firstRowHeader">Is First Row Header?</mat-checkbox>
+      <mat-checkbox class="example-margin" (change)="incomeExpenseCheckboxChange( $event.checked)" formControlName="debitCreditTogether">Are Income/Expense combined in one Column?</mat-checkbox>
+      <mat-form-field>
+        <input matInput formControlName="dateColumn" required placeholder="Column for date" type="number" min="1" max="10">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput formControlName="descriptionColumn" required placeholder="Column for Description" type="number" min="1" max="10">
+      </mat-form-field>
+      <mat-form-field *ngIf="showSingleAmountInput">
+        <input matInput formControlName="amountColumn" required placeholder="Column for amount" type="number" min="1" max="10">
+      </mat-form-field>
+      <mat-form-field *ngIf="!showSingleAmountInput">
+        <input matInput formControlName="debitColumn" required placeholder="Column for debit (expense)" type="number" min="1" max="10">
+      </mat-form-field>
+      <mat-form-field *ngIf="!showSingleAmountInput">
+        <input matInput formControlName="creditColumn" required placeholder="Column for credit (income)" type="number" min="1" max="10">
+      </mat-form-field>
+      <button mat-button color="primary" (click)="parseFileAndPreview()">Show File Contents</button>
+    </div>
   </form>
 </div>
 

@@ -23,6 +23,8 @@
     "@angular/platform-browser-dynamic": "~7.0.0",
     "@angular/router": "~7.0.0",
     "angular-google-charts": "^0.1.6",
+    "banking": "^1.2.0",
+    "c3.js": "^1.0.0",
     "core-js": "^2.5.4",
     "lodash": "^4.17.15",
     "rxjs": "~6.3.3",
