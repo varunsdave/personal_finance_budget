@@ -23,8 +23,6 @@ export class TransactionListComponent implements OnInit {
   maxTodaysDate: Date = new Date();
   accountList: Account[];
 
-  accountId: string = "5d194ce86abd454d0c32aa8b";
-
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -140,7 +138,7 @@ export class TransactionListComponent implements OnInit {
           transactionIds: transactionIds
         };
 
-        this.restClientService.updateTransactionsCategory(categoryUpdate, this.accountId).subscribe((updatedTransactions) => {
+        this.restClientService.updateTransactionsCategory(categoryUpdate, this.selectedAccountId).subscribe((updatedTransactions) => {
 
         });
         this.transactions = this.datasource.data;

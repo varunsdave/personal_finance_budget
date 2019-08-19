@@ -1,10 +1,31 @@
-<div>
-  <mat-form-field>
-    <mat-label>Select Account</mat-label>
-    <mat-select required name="account_info" (selectionChange)="selectAccount(selectedAccount)" [(ngModel)]="selectedAccount">
-      <mat-option *ngFor="let account of accountList" [value]="account.id">{{account.name}}</mat-option>
-    </mat-select>
-  </mat-form-field>
+<div class="header-bar-inputs">
+  <form [formGroup]="accountOverViewForm" >
+    <mat-form-field class="header-bar-mat-forms">
+      <mat-label>Select Account</mat-label>
+      <mat-select required formControlName="accountSelectControl" (selectionChange)="selectAccount($event.value)">
+        <mat-option *ngFor="let account of accountList" [value]="account.id">{{account.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="header-bar-mat-forms">
+      <mat-label>Select Date Range</mat-label>
+      <mat-select required formControlName="accountDateRange" (selectionChange)="dateRangeChange($event.value)">
+        <mat-option [value]="'all'">All</mat-option>
+        <mat-option [value]="'currentYear'">Current Year</mat-option>
+        <mat-option [value]="'currentMonth'">Current Month</mat-option>
+        <mat-option [value]="'custom'">Custom Date Range</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field *ngIf="showCustomDateRange" class="header-bar-mat-forms">
+      <input matInput [required]="true"  formControlName="startDate" [matDatepicker]="startDatePicker" placeholder="Choose start date" >
+      <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #startDatePicker disabled="false"></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field *ngIf="showCustomDateRange" class="header-bar-mat-forms">
+      <input matInput [required]="true"  formControlName="endDate" [matDatepicker]="endDatePicker" placeholder="Choose end date" >
+      <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #endDatePicker disabled="false"></mat-datepicker>
+    </mat-form-field>
+  </form>
 </div>
 <div class="data-container">
   <div>
@@ -40,6 +61,6 @@
   </div>
   <div class="chart-area" *ngIf="dailyBalance.length > 0">
     <google-chart class="chart-area" [title]="'Account Balance Over Time'" [type]="'LineChart'" [data]="dailyBalance" [columnNames]="columnNames"></google-chart>
-    <google-chart class="chart-area" [title]="'Transactions Category Breakdown'" [type]="'PieChart'" [data]="transactionCategories" [columnNames]="columnNames" ></google-chart>
+    <google-chart [title]="'Transactions Category Breakdown'" [type]="'PieChart'" [data]="transactionCategories" [columnNames]="columnNames" ></google-chart>
   </div>
 </div>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {RestClientService} from "../../services/rest-client.service";
 import {Account} from "../../model/account";
 import * as _ from 'lodash';
+import {FormControl, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-account-overview',
@@ -12,9 +13,18 @@ export class AccountOverviewComponent implements OnInit {
 
   balance: number;
   accountName: string;
-  selectedAccount: Account;
+  // selectedAccount: Account;
   currentMonthExpense: number = 0;
   currentMonthIncome: number = 0;
+
+  accountOverViewForm: FormGroup;
+
+  showCustomDateRange: boolean;
+  endDate: FormControl;
+  startDate: FormControl;
+  accountSelectControl: FormControl;
+  accountDateRange: FormControl;
+
   dailyBalance = [
   ];
 
@@ -27,6 +37,7 @@ export class AccountOverviewComponent implements OnInit {
   constructor(private restClientService: RestClientService) { }
 
   ngOnInit() {
+    this.accountOverViewForm = this.setupAccountOverviewForm();
     this.accountName = "Sample Test Account";
     this.restClientService.getAccounts().subscribe((accounts) => {
       this.accountList = accounts;
@@ -34,6 +45,14 @@ export class AccountOverviewComponent implements OnInit {
 
   }
 
+  dateRangeChange(changedValue) {
+    if (changedValue === 'custom') {
+      this.showCustomDateRange = true;
+    } else {
+      this.showCustomDateRange = false;
+    }
+
+  }
   selectAccount(selectedAccountId) {
     this.restClientService.getBalanceByAccount(selectedAccountId).subscribe((data) => {
       this.balance = data;
@@ -85,6 +104,15 @@ export class AccountOverviewComponent implements OnInit {
       });
 
     })
+  }
+
+  private setupAccountOverviewForm(): FormGroup {
+    return new FormGroup({
+      startDate: new FormControl(),
+      endDate: new FormControl(),
+      accountSelectControl: new FormControl(),
+      accountDateRange: new FormControl('all')
+    });
   }
 
 }
