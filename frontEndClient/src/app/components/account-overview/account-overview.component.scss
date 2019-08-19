@@ -5,6 +5,12 @@
   flex-direction: column;
 }
 
+.header-bar-inputs {
+  .header-bar-mat-forms {
+    margin: 10px;
+  }
+}
+
 .data-container {
   display: flex;
   flex-direction: column;

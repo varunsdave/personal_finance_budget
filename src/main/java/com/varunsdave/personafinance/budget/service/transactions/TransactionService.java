@@ -111,7 +111,7 @@ public class TransactionService {
         // if first transaction the
         if (lastTransaction == null) {
             lastTransaction = new Transaction(accountId);
-            lastTransaction.setAccountBalance(BigDecimal.valueOf(transactionList.get(0).getAmount()));
+            lastTransaction.setAccountBalance(BigDecimal.valueOf(0));
         }
 
         BigDecimal previousBalance = lastTransaction.getAccountBalance();
