@@ -26,7 +26,7 @@ public class Swagger2Config {
 
     private ApiInfo apiEndPointsInfo() {
         return new ApiInfoBuilder().title("Peronal Finance Budget Tracking Application Backend")
-                .description("A simple backend REST APIs to store and retrieve expenses and transacations")
+                .description("A simple backend REST APIs to store and retrieve expenses and transactions")
                 .contact(new Contact("Varun Dave", "wwww.varundave.com", "varun.s.dave.public@gmail.com"))
                 .license("Apache 2.0")
                 .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
