@@ -49,32 +49,26 @@ public class TransactionService {
             t.setAccountBalance(accountBalance);
         }
 
-        BigDecimal previousBalance = t.getAccountBalance();
+//        BigDecimal previousBalance = t.getAccountBalance();
+//
+//        for (Transaction trns: transactions) {
+//            if (trns.getType().equals("income")) {
+//                trns.setAccountBalance(previousBalance.add(trns.getAmount()));
+//                previousBalance = trns.getAccountBalance();
+//            } else if (trns.getType().equals("expense")) {
+//                trns.setAccountBalance(previousBalance.subtract(trns.getAmount()));
+//                previousBalance = trns.getAccountBalance();
+//            } else  {
+//                previousBalance = trns.getAccountBalance();
+//            }
+//        }
 
-        for (Transaction trns: transactions) {
-            if (trns.getType().equals("income")) {
-                trns.setAccountBalance(previousBalance.add(trns.getAmount()));
-                previousBalance = trns.getAccountBalance();
-            } else if (trns.getType().equals("expense")) {
-                trns.setAccountBalance(previousBalance.subtract(trns.getAmount()));
-                previousBalance = trns.getAccountBalance();
-            } else  {
-                previousBalance = trns.getAccountBalance();
-            }
-        }
-
+        updateTransactionBalances(t.getAccountBalance(), transactions);
         final List<Transaction> updatedTransactions = new ArrayList<>();
         updatedTransactions.add(t);
         updatedTransactions.addAll(transactions);
         transactionRepository.saveAll(updatedTransactions);
         return t;
-
-        // add this to current transactions
-
-
-        // get and update all transactions after this date.
-
-//        return transactionProcessorFactory.getTransactionProcessorByType(uiTransaction.getType()).create(uiTransaction, accountId);
     }
 
     public List<Transaction> getAllTransactions() {
@@ -82,7 +76,7 @@ public class TransactionService {
     }
 
     public List<Transaction> getAllTransactionsByAccount(final String accountId) {
-        return transactionRepository.findByAccountId(accountId, new Sort(Sort.Direction.DESC, "transactionDate"));
+        return transactionRepository.findByAccountId(accountId, getTransactionDateDescendingSort());
     }
 
     public List<Transaction> getTransactionsByType(String type, String accountId) {
@@ -117,33 +111,35 @@ public class TransactionService {
 
         BigDecimal previousBalance = lastTransaction.getAccountBalance();
 
-        for (Transaction t: convertedList) {
-            if (t.getType().equals("income")) {
-                t.setAccountBalance(previousBalance.add(t.getAmount()));
-                previousBalance = t.getAccountBalance();
-            } else if (t.getType().equals("expense")) {
-                t.setAccountBalance(previousBalance.subtract(t.getAmount()));
-                previousBalance = t.getAccountBalance();
-            } else  {
-                previousBalance = t.getAccountBalance();
-            }
-        }
+//        for (Transaction t: convertedList) {
+//            if (t.getType().equals("income")) {
+//                t.setAccountBalance(previousBalance.add(t.getAmount()));
+//                previousBalance = t.getAccountBalance();
+//            } else if (t.getType().equals("expense")) {
+//                t.setAccountBalance(previousBalance.subtract(t.getAmount()));
+//                previousBalance = t.getAccountBalance();
+//            } else  {
+//                previousBalance = t.getAccountBalance();
+//            }
+//        }
+        updateTransactionBalances(previousBalance, convertedList);
 
         // all later documents;
         List<Transaction> existingDocuments = transactionRepository.findByAccountIdAndTransactionDateIsGreaterThanEqual(accountId, convertedList.get(convertedList.size()-1).getTransactionDate());
 
         if (!existingDocuments.isEmpty()) {
-            for (Transaction t: existingDocuments) {
-                if (t.getType().equals("income")) {
-                    t.setAccountBalance(previousBalance.add(t.getAmount()));
-                    previousBalance = t.getAccountBalance();
-                } else if (t.getType().equals("expense")) {
-                    t.setAccountBalance(previousBalance.subtract(t.getAmount()));
-                    previousBalance = t.getAccountBalance();
-                } else  {
-                    previousBalance = t.getAccountBalance();
-                }
-            }
+//            for (Transaction t: existingDocuments) {
+//                if (t.getType().equals("income")) {
+//                    t.setAccountBalance(previousBalance.add(t.getAmount()));
+//                    previousBalance = t.getAccountBalance();
+//                } else if (t.getType().equals("expense")) {
+//                    t.setAccountBalance(previousBalance.subtract(t.getAmount()));
+//                    previousBalance = t.getAccountBalance();
+//                } else  {
+//                    previousBalance = t.getAccountBalance();
+//                }
+//            }
+            updateTransactionBalances(previousBalance, existingDocuments);
         }
 
         convertedList.addAll(existingDocuments);
@@ -176,16 +172,15 @@ public class TransactionService {
     }
 
     public Transaction getLatestTransactionByAccount(String accountId) {
-        return transactionRepository.findByAccountId(accountId, new Sort(Sort.Direction.DESC, "transactionDate")).get(0);
+        return transactionRepository.findByAccountId(accountId, getTransactionDateDescendingSort()).get(0);
     }
 
-    private BigDecimal getBalance(List<Transaction> income, List<Transaction> expense, BigDecimal startingValue) {
-        BigDecimal total = startingValue.add(sumFromList(income)).subtract(sumFromList(expense));
-        return total;
+    protected BigDecimal getBalance(List<Transaction> income, List<Transaction> expense, BigDecimal startingValue) {
+        return startingValue.add(sumFromList(income)).subtract(sumFromList(expense));
     }
 
 
-    private BigDecimal sumFromList(List<Transaction> tList) {
+    protected BigDecimal sumFromList(List<Transaction> tList) {
         BigDecimal sum = BigDecimal.ZERO;
         for (final Transaction t: tList) {
             sum = sum.add(t.getAmount());
@@ -193,7 +188,7 @@ public class TransactionService {
         return sum;
     }
 
-    private Transaction convertFromUiTransaction(UiTransaction uiTransaction, String accountId) {
+    public Transaction convertFromUiTransaction(UiTransaction uiTransaction, String accountId) {
         Transaction t = new Transaction(accountId);
         t.setAmount(BigDecimal.valueOf(uiTransaction.getAmount()));
         t.setDescription(uiTransaction.getDescription());
@@ -205,4 +200,24 @@ public class TransactionService {
         return t;
     }
 
+    public Sort getTransactionDateDescendingSort() {
+        return new Sort(Sort.Direction.DESC, "transactionDate");
+    }
+
+
+    public void updateTransactionBalances(final BigDecimal initialBalance, final List<Transaction> transactions) {
+        BigDecimal previousBalance = initialBalance;
+
+        for (Transaction trns: transactions) {
+            if (trns.getType().equals("income")) {
+                trns.setAccountBalance(previousBalance.add(trns.getAmount()));
+                previousBalance = trns.getAccountBalance();
+            } else if (trns.getType().equals("expense")) {
+                trns.setAccountBalance(previousBalance.subtract(trns.getAmount()));
+                previousBalance = trns.getAccountBalance();
+            } else  {
+                previousBalance = trns.getAccountBalance();
+            }
+        }
+    }
 }
