@@ -3,7 +3,6 @@ package com.varunsdave.personafinance.budget.repository;
 import com.varunsdave.personafinance.budget.model.Transaction;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 
 import java.util.Date;
 import java.util.List;
@@ -12,7 +11,7 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
 
     List<Transaction> findByAccountId(final String accountId);
 
-    List<Transaction> findByIdInAndAccountId(List<String> ids, final String accountId);
+    List<Transaction> findByIdInAndAccountId(final List<String> ids, final String accountId);
 
     List<Transaction> findByAccountId(final String accountId, final Sort sort);
 

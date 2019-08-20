@@ -6,6 +6,7 @@ import com.varunsdave.personafinance.budget.model.UiTransaction;
 import com.varunsdave.personafinance.budget.repository.AccountRepository;
 import com.varunsdave.personafinance.budget.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
@@ -88,8 +89,8 @@ public class TransactionService {
         return transactionProcessorFactory.getTransactionProcessorByType(type).getAll(accountId);
     }
 
-    public List<Transaction> updateTransactionCategory(String accountId, List<String> transactionIds, UiCategory category) {
-        List<Transaction> dbTransactions = transactionRepository.findByIdInAndAccountId(transactionIds, accountId);
+    public List<Transaction> updateTransactionCategory(final String accountId, final List<String> transactionIds, final UiCategory category) {
+        final List<Transaction> dbTransactions = transactionRepository.findByIdInAndAccountId(transactionIds, accountId);
         dbTransactions.stream().map(dbTransaction ->  {
             dbTransaction.setCategoryName(category.getShortDescription());
             dbTransaction.setCategoryFilter(category.getFilter());
@@ -97,7 +98,7 @@ public class TransactionService {
         }).collect(Collectors.toList());
         transactionRepository.saveAll(dbTransactions);
         return dbTransactions;
-    };
+    }
 
     public List<Transaction> uploadTransactions(List<UiTransaction> transactionList, String accountId) {
 
