@@ -1,5 +1,10 @@
 # Personal Finance Budget and Expense Tracking
 
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=varunsdave_personal_finance_budget&metric=bugs)](https://sonarcloud.io/dashboard?id=varunsdave_personal_finance_budget)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=varunsdave_personal_finance_budget&metric=code_smells)](https://sonarcloud.io/dashboard?id=varunsdave_personal_finance_budget)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=varunsdave_personal_finance_budget&metric=coverage)](https://sonarcloud.io/dashboard?id=varunsdave_personal_finance_budget)
+
+
 This is an app that can be deployed to your local machine with a connected data source 
 to track your expense and income. The app will come with a front end view that will provide
 simple reporting. 
