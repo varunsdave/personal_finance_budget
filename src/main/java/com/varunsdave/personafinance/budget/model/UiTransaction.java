@@ -1,9 +1,6 @@
 package com.varunsdave.personafinance.budget.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 import java.util.Date;

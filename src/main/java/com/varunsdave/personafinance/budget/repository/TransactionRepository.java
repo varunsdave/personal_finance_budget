@@ -21,6 +21,5 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
 
     Transaction findTopByAccountIdAndTransactionDateIsLessThanEqual(final String accountId, final Date transactionDate);
 
-//    Transaction findTopOrderByTransactionDateDesc();
 }
 

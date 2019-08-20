@@ -24,9 +24,9 @@ public class TransactionService {
     private final AccountRepository accountRepository;
     private final TransactionProcessorFactory transactionProcessorFactory;
 
-    private final String INCOME = "income";
-    private final String EXPENSE = "expense";
-    private final String BALANCE = "balance";
+    private static final String INCOME = "income";
+    private static final String EXPENSE = "expense";
+    private static final String BALANCE = "balance";
 
     public Transaction create(UiTransaction uiTransaction, String accountId) {
         if (accountRepository.findById(accountId).isEmpty()) {
@@ -87,7 +87,7 @@ public class TransactionService {
         Transaction lastTransaction = transactionRepository.
                 findTopByAccountIdAndTransactionDateIsLessThanEqual(accountId, transactionList.get(0).getTransactionDate());
         List<Transaction> convertedList = transactionList.stream()
-                .map((uiTransaction) -> convertFromUiTransaction(uiTransaction, accountId))
+                .map(uiTransaction -> convertFromUiTransaction(uiTransaction, accountId))
                 .collect(Collectors.toList());
 
         // if first transaction the
@@ -100,7 +100,7 @@ public class TransactionService {
 
         updateTransactionBalances(previousBalance, convertedList);
 
-        // all later documents;
+        // all later documents
         List<Transaction> existingDocuments = transactionRepository.findByAccountIdAndTransactionDateIsGreaterThanEqual(accountId, convertedList.get(convertedList.size()-1).getTransactionDate());
 
         if (!existingDocuments.isEmpty()) {

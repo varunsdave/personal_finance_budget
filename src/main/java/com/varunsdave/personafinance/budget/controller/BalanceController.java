@@ -14,8 +14,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/balance")
 public class BalanceController {
+
+    private static final String TYPE = "balance";
     private final TransactionService transactionService;
-    private final String TYPE = "balance";
 
     /**
      * Creates a record of new balance type of transaction. This is used to update

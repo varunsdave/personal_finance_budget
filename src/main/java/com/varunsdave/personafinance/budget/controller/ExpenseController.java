@@ -14,8 +14,8 @@ import java.util.List;
 @RequestMapping("/expense")
 public class ExpenseController {
 
+    private static final String TYPE = "expense";
     private final TransactionService transactionService;
-    private final String TYPE = "expense";
 
     @PostMapping("/account/{accountId}")
     public ResponseEntity<Transaction> createExpense(@PathVariable String accountId, @RequestBody UiTransaction transaction) {

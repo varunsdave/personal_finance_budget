@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class IncomeTransactionProcessor implements TransactionProcessor {
 
-    private final String TRANSACTION_TYPE = "income";
+    private static final String TRANSACTION_TYPE = "income";
     private final TransactionRepository transactionRepository;
 
     @Override
@@ -38,13 +38,13 @@ public class IncomeTransactionProcessor implements TransactionProcessor {
 
     @Override
     public void delete(String id) {
+        // not implemented yet.
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<Transaction> getAll(final String accountId) {
-        final List<Transaction> incomeTransactions = transactionRepository.findByAccountIdAndType(accountId, TRANSACTION_TYPE);
-        System.out.println(incomeTransactions.size());
-        return incomeTransactions;
+        return transactionRepository.findByAccountIdAndType(accountId, TRANSACTION_TYPE);
     }
 
     @Override

@@ -15,8 +15,8 @@ import java.util.List;
 @RequestMapping("/income")
 public class IncomeController {
 
+    private static final String TYPE = "income";
     private final TransactionService transactionService;
-    private final String TYPE = "income";
 
     @PostMapping("/account/{accountId}")
     public ResponseEntity<Transaction> createIncome(@PathVariable String accountId, @RequestBody UiTransaction transaction) {

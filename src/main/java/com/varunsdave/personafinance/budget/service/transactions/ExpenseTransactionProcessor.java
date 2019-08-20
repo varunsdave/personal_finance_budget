@@ -8,7 +8,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ExpenseTransactionProcessor implements TransactionProcessor {
 
-    private final String TRANSACTION_TYPE = "expense";
+    private static final String TRANSACTION_TYPE = "expense";
     private final TransactionRepository transactionRepository;
 
     @Override
@@ -38,14 +37,13 @@ public class ExpenseTransactionProcessor implements TransactionProcessor {
 
     @Override
     public void delete(String id) {
-
+        // not implemented yet.
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<Transaction> getAll(final String accountId) {
-        final List<Transaction> expenseTransactions =transactionRepository.findByAccountIdAndType(accountId, TRANSACTION_TYPE);
-        System.out.println(expenseTransactions.size());
-        return expenseTransactions;
+        return transactionRepository.findByAccountIdAndType(accountId, TRANSACTION_TYPE);
     }
 
     @Override

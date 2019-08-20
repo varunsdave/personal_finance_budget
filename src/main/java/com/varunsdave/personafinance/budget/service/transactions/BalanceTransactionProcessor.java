@@ -7,15 +7,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
 public class BalanceTransactionProcessor implements TransactionProcessor {
-    private final String TRANSACTION_TYPE = "balance";
+    private static final String TRANSACTION_TYPE = "balance";
     private final TransactionRepository transactionRepository;
 
     @Override
@@ -34,7 +31,8 @@ public class BalanceTransactionProcessor implements TransactionProcessor {
 
     @Override
     public void delete(String id) {
-
+        // not implemented yet.
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -50,7 +48,7 @@ public class BalanceTransactionProcessor implements TransactionProcessor {
 
     @Override
     public List<Transaction> getAllAfterDate(String accountId, Date date) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -61,7 +59,7 @@ public class BalanceTransactionProcessor implements TransactionProcessor {
     @Override
     public Transaction getMostRecent(String accountId) {
         List<Transaction> transactions = transactionRepository.findByAccountIdAndType(accountId, TRANSACTION_TYPE);
-        return (transactions.size() > 0) ? transactions.get(transactions.size() - 1 ) : null;
+        return (transactions.isEmpty()) ? transactions.get(transactions.size() - 1 ) : null;
     }
 
     private void updateTransactionBalances(Transaction balanceTransaction) {
