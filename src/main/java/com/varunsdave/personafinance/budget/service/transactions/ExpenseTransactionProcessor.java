@@ -48,12 +48,10 @@ public class ExpenseTransactionProcessor implements TransactionProcessor {
 
     @Override
     public List<Transaction> getAllAfterDate(String accountId, Date date) {
-        final List<Transaction> expenseTransactions = transactionRepository
+        return transactionRepository
                 .findByAccountIdAndType(accountId, TRANSACTION_TYPE)
                 .stream().filter(transaction -> transaction.getTransactionDate().compareTo(date) >= 0)
                 .collect(Collectors.toList());
-
-        return expenseTransactions;
     }
 
     @Override

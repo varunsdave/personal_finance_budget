@@ -20,8 +20,6 @@ public class FileUploadController {
     public ResponseEntity<List<Transaction>> uploadCsvFile(
             @PathVariable String accountId, @RequestBody List<UiTransaction> transactions
     ) {
-        List<Transaction> transactionsList = fileUploadService.processFile(transactions, accountId);
-        System.out.println(transactionsList.size());
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok( fileUploadService.processFile(transactions, accountId));
     }
 }

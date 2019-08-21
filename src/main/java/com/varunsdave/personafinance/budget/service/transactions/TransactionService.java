@@ -131,7 +131,6 @@ public class TransactionService {
         // get the last transaction for that account
         List<Transaction> lastTransaction = transactionRepository.findByAccountId(accountId, getTransactionDateDescendingSort());
         return lastTransaction.get(0).getAccountBalance();
-//        return BigDecimal.valueOf(0);
     }
 
     public Transaction getLatestTransactionByAccount(String accountId) {

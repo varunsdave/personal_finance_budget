@@ -208,11 +208,6 @@ public class TransactionServiceTests {
         Assertions.assertThat(initialValues.doubleValue()).isEqualTo(5.0);
     }
 
-    @Test
-    public void testGetSumFromTransactions() {
-
-    }
-
     private List<Transaction> generateMockTransactions(final List<String> transactionIds, final String accountId) {
         final List<Transaction> mockTransactions = new ArrayList<>();
         for (int i = 0; i < transactionIds.size(); i++) {
