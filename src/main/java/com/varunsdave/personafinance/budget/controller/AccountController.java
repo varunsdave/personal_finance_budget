@@ -1,6 +1,7 @@
 package com.varunsdave.personafinance.budget.controller;
 
 import com.varunsdave.personafinance.budget.model.Account;
+import com.varunsdave.personafinance.budget.model.UiAccount;
 import com.varunsdave.personafinance.budget.service.account.AccountService;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -17,8 +18,8 @@ public class AccountController {
 
     @PostMapping("")
     @ApiOperation("Creates an account with the specified id")
-    public Account createAccount(@RequestBody Account account) {
-        return accountService.create(account);
+    public Account createAccount(@RequestBody UiAccount uiAccount) {
+        return accountService.create(uiAccount);
     }
 
     @GetMapping("")
