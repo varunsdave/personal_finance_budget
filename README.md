@@ -1,5 +1,6 @@
 # Personal Finance Budget and Expense Tracking
 
+Server Badges: 
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=varunsdave_personal_finance_budget&metric=bugs)](https://sonarcloud.io/dashboard?id=varunsdave_personal_finance_budget)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=varunsdave_personal_finance_budget&metric=code_smells)](https://sonarcloud.io/dashboard?id=varunsdave_personal_finance_budget)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=varunsdave_personal_finance_budget&metric=coverage)](https://sonarcloud.io/dashboard?id=varunsdave_personal_finance_budget)
@@ -20,6 +21,7 @@ The front end facilitates upload and visualisations.
 
 Ideally, the front end and backend can be hosted separately. Just requires some config changes. 
 
+**Front end is only here to provide an example project to use the backend.**
 
 ## Requirements
 
