@@ -21,5 +21,13 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
 
     Transaction findTopByAccountIdAndTransactionDateIsLessThanEqual(final String accountId, final Date transactionDate);
 
+    /**
+     * Finds all previous transactions
+     * @param accountId
+     * @param transactionDate
+     * @return
+     */
+    List<Transaction> findByAccountIdAndTransactionDateIsLessThanEqual(final String accountId, final Date transactionDate);
+
 }
 

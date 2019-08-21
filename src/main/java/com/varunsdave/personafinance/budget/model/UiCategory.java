@@ -1,6 +1,6 @@
 package com.varunsdave.personafinance.budget.model;
 
-import lombok.Data;
+import lombok.*;
 
 @Data
 public class UiCategory {

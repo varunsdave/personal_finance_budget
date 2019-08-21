@@ -1,11 +1,13 @@
 package com.varunsdave.personafinance.budget.model;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 import java.util.Date;
 
 @Data
+@RequiredArgsConstructor
 public class UiTransaction {
 
     @Id

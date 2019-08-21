@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -126,6 +127,91 @@ public class TransactionServiceTests {
         Assertions.assertThat(actualSort.getOrderFor("transactionDate")).isEqualTo(expectedSort.getOrderFor("transactionDate"));
     }
 
+    @Test
+    public void testUpdateBalances() {
+        // tests increasing balance order
+        List<Transaction> mockTransactions = new ArrayList<>();
+        final String accountId = UUID.randomUUID().toString();
+
+        Transaction t1 = new Transaction(accountId);
+        t1.setId(UUID.randomUUID().toString());
+        t1.setType("income");
+        t1.setAmount(BigDecimal.valueOf(10));
+
+        // when initial
+        transactionService.updateTransactionBalances(BigDecimal.ZERO, mockTransactions);
+
+        Assertions.assertThat(mockTransactions.size()).isEqualTo(0);
+        mockTransactions.add(t1);
+
+        // when starting
+        transactionService.updateTransactionBalances(BigDecimal.ZERO, mockTransactions);
+        Assertions.assertThat(mockTransactions.get(0).getAccountBalance()).isEqualTo(BigDecimal.valueOf(10.0));
+
+        mockTransactions.remove(0);
+
+        t1.setType("expense");
+        t1.setAccountBalance(BigDecimal.ZERO);
+        mockTransactions.add(t1);
+        transactionService.updateTransactionBalances(BigDecimal.ZERO, mockTransactions);
+        Assertions.assertThat(mockTransactions.get(0).getAccountBalance()).isEqualTo(BigDecimal.valueOf(-10.0));
+
+        // test balances one's do not get updated.
+        mockTransactions.remove(0);
+
+        t1.setType("balance");
+        t1.setAccountBalance(BigDecimal.ZERO);
+        mockTransactions.add(t1);
+
+        transactionService.updateTransactionBalances(BigDecimal.ZERO, mockTransactions);
+        Assertions.assertThat(mockTransactions.get(0).getAccountBalance()).isEqualTo(BigDecimal.valueOf(0));
+
+        // test initial amount is not changed.
+        mockTransactions.remove(0);
+
+        t1.setType("income");
+        t1.setAccountBalance(BigDecimal.ZERO);
+        mockTransactions.add(t1);
+        BigDecimal previousBalance = BigDecimal.valueOf(5);
+        transactionService.updateTransactionBalances(previousBalance, mockTransactions);
+        Assertions.assertThat(mockTransactions.get(0).getAccountBalance()).isEqualTo(BigDecimal.valueOf(15.0));
+        Assertions.assertThat(previousBalance.doubleValue()).isEqualTo(5.0);
+    }
+
+    @Test
+    public void testTransactionBalanceUpdateWithMultipleListItems() {
+        List<Transaction> mockTransactions = new ArrayList<>();
+        final String accountId = UUID.randomUUID().toString();
+
+        Transaction t1 = new Transaction(accountId);
+        t1.setId(UUID.randomUUID().toString());
+        t1.setType("income");
+        t1.setAmount(BigDecimal.valueOf(10));
+        Transaction t2 = new Transaction(accountId);
+        t2.setType("expense");
+        t2.setAmount(BigDecimal.valueOf(30));
+
+        Transaction t3 = new Transaction(accountId);
+        t3.setType("income");
+        t3.setAmount(BigDecimal.valueOf(10));
+
+        mockTransactions.add(t1);
+        mockTransactions.add(t2);
+        mockTransactions.add(t3);
+
+        BigDecimal initialValues = BigDecimal.valueOf(5.0);
+
+        transactionService.updateTransactionBalances(initialValues, mockTransactions);
+        Assertions.assertThat(t1.getAccountBalance()).isEqualTo(BigDecimal.valueOf(15.0));
+        Assertions.assertThat(t2.getAccountBalance()).isEqualTo(BigDecimal.valueOf(-15.0));
+        Assertions.assertThat(t3.getAccountBalance()).isEqualTo(BigDecimal.valueOf(-5.0));
+        Assertions.assertThat(initialValues.doubleValue()).isEqualTo(5.0);
+    }
+
+    @Test
+    public void testGetSumFromTransactions() {
+
+    }
 
     private List<Transaction> generateMockTransactions(final List<String> transactionIds, final String accountId) {
         final List<Transaction> mockTransactions = new ArrayList<>();
