@@ -20,7 +20,7 @@ public class Transaction {
 
     private Date transactionDate;
 
-    private String Description;
+    private String description;
 
     private String type;
 

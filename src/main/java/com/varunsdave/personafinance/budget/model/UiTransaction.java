@@ -17,7 +17,7 @@ public class UiTransaction {
 
     private Date transactionDate;
 
-    private String Description;
+    private String description;
 
     private String type;
 
