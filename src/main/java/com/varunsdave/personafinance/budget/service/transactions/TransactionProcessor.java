@@ -1,7 +1,6 @@
 package com.varunsdave.personafinance.budget.service.transactions;
 
 import com.varunsdave.personafinance.budget.model.Transaction;
-import com.varunsdave.personafinance.budget.model.UiTransaction;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +12,7 @@ public interface TransactionProcessor {
      * @param transaction transaction model
      * @return persisted model of the transaction
      */
-    Transaction create(UiTransaction transaction, String accountId);
+    Transaction create(Transaction transaction, String accountId);
 
     /**
      * Deletes a transaction based on the id

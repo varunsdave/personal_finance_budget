@@ -3,6 +3,7 @@
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=varunsdave_personal_finance_budget&metric=bugs)](https://sonarcloud.io/dashboard?id=varunsdave_personal_finance_budget)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=varunsdave_personal_finance_budget&metric=code_smells)](https://sonarcloud.io/dashboard?id=varunsdave_personal_finance_budget)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=varunsdave_personal_finance_budget&metric=coverage)](https://sonarcloud.io/dashboard?id=varunsdave_personal_finance_budget)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=varunsdave_personal_finance_budget&metric=alert_status)](https://sonarcloud.io/dashboard?id=varunsdave_personal_finance_budget)
 
 
 This is an app that can be deployed to your local machine with a connected data source 

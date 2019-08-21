@@ -1,13 +1,11 @@
 package com.varunsdave.personafinance.budget.service.transactions;
 
 import com.varunsdave.personafinance.budget.model.Transaction;
-import com.varunsdave.personafinance.budget.model.UiTransaction;
 import com.varunsdave.personafinance.budget.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,24 +14,20 @@ import java.util.stream.Collectors;
 @Service
 public class IncomeTransactionProcessor implements TransactionProcessor {
 
-    private static final String TRANSACTION_TYPE = "income";
+    private static final String INCOME_TRANSACTION_TYPE = "income";
     private final TransactionRepository transactionRepository;
 
     @Override
-    public Transaction create(UiTransaction transaction, String accountId) {
-        final Transaction createdTransaction = new Transaction(accountId);
-        createdTransaction.setAmount(BigDecimal.valueOf(transaction.getAmount()));
-        createdTransaction.setDescription(transaction.getDescription());
-        createdTransaction.setTransactionDate(transaction.getTransactionDate());
-        createdTransaction.setType(TRANSACTION_TYPE);
+    public Transaction create(Transaction transaction, String accountId) {
+        transaction.setType(INCOME_TRANSACTION_TYPE);
         final List<Transaction> previousTransactions = transactionRepository.findByAccountId(accountId,  new Sort(Sort.Direction.DESC, "transactionDate"));
         if (previousTransactions.isEmpty()) {
-            createdTransaction.setAccountBalance(createdTransaction.getAmount());
+            transaction.setAccountBalance(transaction.getAmount());
         } else {
-            createdTransaction.setAccountBalance(previousTransactions.get(0).getAccountBalance().add(createdTransaction.getAmount()));
+            transaction.setAccountBalance(previousTransactions.get(0).getAccountBalance().add(transaction.getAmount()));
         }
 
-        return transactionRepository.save(createdTransaction);
+        return transactionRepository.save(transaction);
     }
 
     @Override
@@ -44,13 +38,13 @@ public class IncomeTransactionProcessor implements TransactionProcessor {
 
     @Override
     public List<Transaction> getAll(final String accountId) {
-        return transactionRepository.findByAccountIdAndType(accountId, TRANSACTION_TYPE);
+        return transactionRepository.findByAccountIdAndType(accountId, INCOME_TRANSACTION_TYPE);
     }
 
     @Override
     public List<Transaction> getAllAfterDate(String accountId, Date date) {
         return transactionRepository
-                .findByAccountIdAndType(accountId, TRANSACTION_TYPE)
+                .findByAccountIdAndType(accountId, INCOME_TRANSACTION_TYPE)
                 .stream()
                 .filter(transaction -> transaction.getTransactionDate().compareTo(date) >= 0 )
                 .collect(Collectors.toList());

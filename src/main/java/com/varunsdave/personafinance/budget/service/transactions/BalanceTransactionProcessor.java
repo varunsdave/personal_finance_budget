@@ -1,7 +1,6 @@
 package com.varunsdave.personafinance.budget.service.transactions;
 
 import com.varunsdave.personafinance.budget.model.Transaction;
-import com.varunsdave.personafinance.budget.model.UiTransaction;
 import com.varunsdave.personafinance.budget.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,20 +11,13 @@ import java.util.*;
 @Service
 @AllArgsConstructor
 public class BalanceTransactionProcessor implements TransactionProcessor {
-    private static final String TRANSACTION_TYPE = "balance";
+    private static final String BALANCE_TRANSACTION_TYPE = "balance";
     private final TransactionRepository transactionRepository;
 
     @Override
-    public Transaction create(final UiTransaction uiTransaction, final String accountId) {
-        Transaction transaction = new Transaction(accountId);
-        transaction.setTransactionDate(uiTransaction.getTransactionDate());
-        transaction.setId(UUID.randomUUID().toString());
-        transaction.setAmount(BigDecimal.valueOf(uiTransaction.getAmount()));
-        transaction.setType(TRANSACTION_TYPE);
-        transaction.setAccountBalance(transaction.getAmount());
-
+    public Transaction create(Transaction transaction, final String accountId) {
+        transaction.setType(BALANCE_TRANSACTION_TYPE);
         updateTransactionBalances(transaction);
-
         return transactionRepository.save(transaction);
     }
 
@@ -39,7 +31,7 @@ public class BalanceTransactionProcessor implements TransactionProcessor {
     public List<Transaction> getAll(final String accountId) {
         final List<Transaction> expenseTransactions = new ArrayList<>();
         for (final Transaction t : transactionRepository.findAll()) {
-            if (t.getType().equals(TRANSACTION_TYPE)) {
+            if (t.getType().equals(BALANCE_TRANSACTION_TYPE)) {
                 expenseTransactions.add(t);
             }
         }
@@ -58,7 +50,7 @@ public class BalanceTransactionProcessor implements TransactionProcessor {
 
     @Override
     public Transaction getMostRecent(String accountId) {
-        List<Transaction> transactions = transactionRepository.findByAccountIdAndType(accountId, TRANSACTION_TYPE);
+        List<Transaction> transactions = transactionRepository.findByAccountIdAndType(accountId, BALANCE_TRANSACTION_TYPE);
         return (transactions.isEmpty()) ? transactions.get(transactions.size() - 1 ) : null;
     }
 
