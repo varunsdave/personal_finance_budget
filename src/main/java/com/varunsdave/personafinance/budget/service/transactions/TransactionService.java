@@ -104,22 +104,19 @@ public class TransactionService {
                 .map(uiTransaction -> convertFromUiTransaction(uiTransaction, accountId))
                 .collect(Collectors.toList());
 
+        BigDecimal previousBalance;
         // if first transaction the
         if (lastTransaction == null) {
-            lastTransaction = new Transaction(accountId);
-            lastTransaction.setAccountBalance(BigDecimal.valueOf(0));
+            previousBalance = BigDecimal.ZERO;
+        } else {
+            previousBalance = lastTransaction.getAccountBalance();
         }
-
-        BigDecimal previousBalance = lastTransaction.getAccountBalance();
 
         updateTransactionBalances(previousBalance, convertedList);
-
+        previousBalance = convertedList.get(convertedList.size() - 1).getAccountBalance();
         // all later documents
         List<Transaction> existingDocuments = transactionRepository.findByAccountIdAndTransactionDateIsGreaterThanEqual(accountId, convertedList.get(convertedList.size()-1).getTransactionDate());
-
-        if (!existingDocuments.isEmpty()) {
-            updateTransactionBalances(previousBalance, existingDocuments);
-        }
+        updateTransactionBalances(previousBalance, existingDocuments);
 
         convertedList.addAll(existingDocuments);
 
@@ -136,10 +133,6 @@ public class TransactionService {
         } else {
             return lastTransaction.get(0).getAccountBalance();
         }
-    }
-
-    public Transaction getLatestTransactionByAccount(String accountId) {
-        return transactionRepository.findByAccountId(accountId, getTransactionDateDescendingSort()).get(0);
     }
 
     public Transaction convertFromUiTransaction(UiTransaction uiTransaction, String accountId) {

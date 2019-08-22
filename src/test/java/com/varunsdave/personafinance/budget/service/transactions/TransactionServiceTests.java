@@ -17,8 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.*;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,7 +50,7 @@ public class TransactionServiceTests {
             transactionIds.add(UUID.randomUUID().toString());
         }
         final String accountId = UUID.randomUUID().toString();
-        final List<Transaction> mockTransactions = generateMockTransactions(transactionIds, accountId);
+        final List<Transaction> mockTransactions = generateMockTransactionsWithIds(transactionIds, accountId);
         when(transactionRepository.findAll())
                 .thenReturn(mockTransactions);
 
@@ -69,7 +71,7 @@ public class TransactionServiceTests {
             transactionIds.add(UUID.randomUUID().toString());
         }
         final String accountId = UUID.randomUUID().toString();
-        final List<Transaction> mockTransactions = generateMockTransactions(transactionIds, accountId);
+        final List<Transaction> mockTransactions = generateMockTransactionsWithIds(transactionIds, accountId);
         when(transactionRepository.findByIdInAndAccountId(transactionIds, accountId))
                 .thenReturn(mockTransactions);
 
@@ -238,7 +240,7 @@ public class TransactionServiceTests {
             transactionIds.add(UUID.randomUUID().toString());
         }
         final String accountId = UUID.randomUUID().toString();
-        List<Transaction> mockTransactions = generateMockTransactions(transactionIds, accountId);
+        List<Transaction> mockTransactions = generateMockTransactionsWithIds(transactionIds, accountId);
 
         Mockito.when(transactionRepository.findByIdInAndAccountId(transactionIds, accountId)).thenReturn(mockTransactions);
 
@@ -249,7 +251,130 @@ public class TransactionServiceTests {
             Assertions.assertThat(actualTransactions.get(i).getCategoryFilter()).isEqualTo(filterString);
         }
     }
-    private List<Transaction> generateMockTransactions(final List<String> transactionIds, final String accountId) {
+
+    /**
+     * Tests upload of transactions with no previous transactions for the account.
+     * Verify all balances are correct.
+     */
+    @Test
+    public void testUploadTransactionListNoPreviousTransactions() {
+        final String accountId = UUID.randomUUID().toString();
+        final List<UiTransaction> mockUiTransactions = generateMockUiTransactions(10);
+
+        Mockito.when(transactionRepository
+                .findTopByAccountIdAndTransactionDateIsLessThanEqual(accountId, mockUiTransactions.get(0).getTransactionDate()))
+                .thenReturn(null);
+        Mockito.when(transactionRepository
+                .findByAccountIdAndTransactionDateIsGreaterThanEqual(any(String.class), any(Date.class)))
+                .thenReturn(Collections.EMPTY_LIST);
+        List<Transaction> actualList = transactionService.uploadTransactions(mockUiTransactions, accountId);
+
+        BigDecimal expected = BigDecimal.valueOf(0.0);
+        for (int i = 0; i < mockUiTransactions.size(); i++) {
+            expected = expected.add(BigDecimal.valueOf(i));
+            Assertions.assertThat(actualList.get(i).getAccountBalance()).isEqualTo(expected);
+        }
+
+        Assertions.assertThat(actualList.size()).isEqualTo(10);
+
+    }
+
+    @Test
+    public void testUploadTransactionListWithNewTransactionsBeforeExistingTransactions() {
+        final String accountId = UUID.randomUUID().toString();
+        final List<UiTransaction> mockUiTransactions = generateMockUiTransactions(10);
+        final Transaction mockPreviousTransaction = randomObject.nextObject(Transaction.class);
+        BigDecimal previousBalance = BigDecimal.valueOf(4000.0);
+        mockPreviousTransaction.setAccountBalance(previousBalance);
+        Mockito.when(transactionRepository
+                .findTopByAccountIdAndTransactionDateIsLessThanEqual(accountId, mockUiTransactions.get(0).getTransactionDate()))
+                .thenReturn(mockPreviousTransaction);
+
+        Mockito.when(transactionRepository
+                .findByAccountIdAndTransactionDateIsGreaterThanEqual(any(String.class), any(Date.class)))
+                .thenReturn(Collections.EMPTY_LIST);
+
+        List<Transaction> actualList = transactionService.uploadTransactions(mockUiTransactions, accountId);
+
+        BigDecimal expected = BigDecimal.valueOf(previousBalance.doubleValue());
+        for (int i = 0; i < mockUiTransactions.size(); i++) {
+            expected = expected.add(BigDecimal.valueOf(i));
+            Assertions.assertThat(actualList.get(i).getAccountBalance()).isEqualTo(expected);
+        }
+
+        Assertions.assertThat(actualList.size()).isEqualTo(10);
+    }
+
+    @Test
+    public void testUploadTransactionListWithNewTransactionsAfterExistingTransactions() {
+        final String accountId = UUID.randomUUID().toString();
+        final List<UiTransaction> mockUiTransactions = generateMockUiTransactions(10);
+        final Transaction mockPreviousTransaction = randomObject.nextObject(Transaction.class);
+        BigDecimal previousBalance = BigDecimal.valueOf(990.0);
+        mockPreviousTransaction.setAccountBalance(previousBalance);
+        Mockito.when(transactionRepository
+                .findTopByAccountIdAndTransactionDateIsLessThanEqual(accountId, mockUiTransactions.get(0).getTransactionDate()))
+                .thenReturn(mockPreviousTransaction);
+
+        final List<Transaction> mockExistingTransactions = new ArrayList<>();
+        Transaction existingT1 = randomObject.nextObject(Transaction.class);
+        existingT1.setType("income");
+        existingT1.setAmount(BigDecimal.valueOf(10.0));
+        existingT1.setAccountBalance(BigDecimal.valueOf(1000.0));
+
+        Transaction existingT2 = randomObject.nextObject(Transaction.class);
+        existingT2.setType("expense");
+        existingT2.setAmount(BigDecimal.valueOf(100.0));
+        existingT2.setAccountBalance(BigDecimal.valueOf(900.0));
+
+        mockExistingTransactions.add(existingT1);
+        mockExistingTransactions.add(existingT2);
+
+        Mockito.when(transactionRepository
+                .findByAccountIdAndTransactionDateIsGreaterThanEqual(any(String.class), any(Date.class)))
+                .thenReturn(mockExistingTransactions);
+
+        List<Transaction> actualList = transactionService.uploadTransactions(mockUiTransactions, accountId);
+
+        BigDecimal expected = BigDecimal.valueOf(previousBalance.doubleValue());
+        for (int i = 0; i < mockUiTransactions.size(); i++) {
+            expected = expected.add(BigDecimal.valueOf(i));
+            Assertions.assertThat(actualList.get(i).getAccountBalance()).isEqualTo(expected);
+        }
+
+        Assertions.assertThat(actualList.size()).isEqualTo(12);
+
+        Assertions.assertThat(actualList.get(10).getAccountBalance()).isEqualTo(BigDecimal.valueOf(1045.0)); // 990 + 45 + 10
+        Assertions.assertThat(actualList.get(11).getAccountBalance()).isEqualTo(BigDecimal.valueOf(945.0)); // 990 + 45 + 10 - 100
+    }
+
+    private List<UiTransaction> generateMockUiTransactions(final int size) {
+        final List<UiTransaction> transactionList = new ArrayList<>();
+        final UiCategory category = randomObject.nextObject(UiCategory.class);
+        final Date transactionDate = Date.from(Instant.now());
+        for (int i = 0; i < size; i++) {
+            UiTransaction transaction = randomObject.nextObject(UiTransaction.class);
+            transaction.setId(UUID.randomUUID().toString());
+            transaction.setAmount(i);
+            transaction.setTransactionDate(Date.from(Instant.ofEpochSecond(transactionDate.getTime() + i)));
+            transaction.setCategory(category);
+            transaction.setType("income");
+            transactionList.add(transaction);
+        }
+        return transactionList;
+    }
+
+
+    private List<Transaction> generateMockTransactions(final String accountId) {
+        final List<String> transactionIds = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            transactionIds.add(UUID.randomUUID().toString());
+        }
+        return generateMockTransactionsWithIds(transactionIds, accountId);
+    }
+
+
+    private List<Transaction> generateMockTransactionsWithIds(final List<String> transactionIds, final String accountId) {
         final List<Transaction> mockTransactions = new ArrayList<>();
         for (int i = 0; i < transactionIds.size(); i++) {
             Transaction mockT = new Transaction(accountId);
