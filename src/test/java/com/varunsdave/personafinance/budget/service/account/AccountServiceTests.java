@@ -1,11 +1,8 @@
-package com.varunsdave.personafinance.budget.account;
+package com.varunsdave.personafinance.budget.service.account;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.varunsdave.personafinance.budget.model.Account;
 import com.varunsdave.personafinance.budget.model.UiAccount;
-import com.varunsdave.personafinance.budget.model.UiCategory;
 import com.varunsdave.personafinance.budget.repository.AccountRepository;
-import com.varunsdave.personafinance.budget.service.account.AccountService;
 import org.assertj.core.api.Assertions;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)

@@ -22,7 +22,6 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
-    private final TransactionProcessorFactory transactionProcessorFactory;
 
     private static final String INCOME = "income";
     private static final String EXPENSE = "expense";
@@ -61,7 +60,9 @@ public class TransactionService {
         }
 
         // get last transaction from that date
-        final List<Transaction> nextTransactions = transactionRepository.findByAccountIdAndTransactionDateIsGreaterThanEqual(accountId, uiTransaction.getTransactionDate());
+        final List<Transaction> nextTransactions = transactionRepository
+                .findByAccountIdAndTransactionDateIsGreaterThanEqual(accountId, uiTransaction.getTransactionDate());
+
         updateTransactionBalances(t.getAccountBalance(), nextTransactions);
 
         final List<Transaction> updatedTransactions = new ArrayList<>();
@@ -80,7 +81,7 @@ public class TransactionService {
     }
 
     public List<Transaction> getTransactionsByType(String type, String accountId) {
-        return transactionProcessorFactory.getTransactionProcessorByType(type).getAll(accountId);
+        return transactionRepository.findByAccountIdAndType(accountId, type);
     }
 
     public List<Transaction> updateTransactionCategory(final String accountId, final List<String> transactionIds, final UiCategory category) {
@@ -130,7 +131,11 @@ public class TransactionService {
     public BigDecimal getCurrentBalance(final String accountId) {
         // get the last transaction for that account
         List<Transaction> lastTransaction = transactionRepository.findByAccountId(accountId, getTransactionDateDescendingSort());
-        return lastTransaction.get(0).getAccountBalance();
+        if (lastTransaction.isEmpty()) {
+            return BigDecimal.ZERO;
+        } else {
+            return lastTransaction.get(0).getAccountBalance();
+        }
     }
 
     public Transaction getLatestTransactionByAccount(String accountId) {

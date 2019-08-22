@@ -1,12 +1,10 @@
-package com.varunsdave.personafinance.budget.transactions;
+package com.varunsdave.personafinance.budget.service.transactions;
 
 import com.varunsdave.personafinance.budget.model.Transaction;
 import com.varunsdave.personafinance.budget.model.UiCategory;
 import com.varunsdave.personafinance.budget.model.UiTransaction;
 import com.varunsdave.personafinance.budget.repository.AccountRepository;
 import com.varunsdave.personafinance.budget.repository.TransactionRepository;
-import com.varunsdave.personafinance.budget.service.transactions.TransactionProcessor;
-import com.varunsdave.personafinance.budget.service.transactions.TransactionService;
 import org.assertj.core.api.Assertions;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Test;
@@ -14,15 +12,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,9 +27,6 @@ public class TransactionServiceTests {
 
     @Mock
     private TransactionRepository transactionRepository;
-
-    @Mock
-    private TransactionProcessor transactionProcessor;
 
     @Mock
     private AccountRepository accountRepository;
@@ -205,6 +199,56 @@ public class TransactionServiceTests {
         Assertions.assertThat(initialValues.doubleValue()).isEqualTo(5.0);
     }
 
+    @Test
+    public void testGetCurrentBalanceNoTransactions()
+    {
+        final String mockAccountId =  UUID.randomUUID().toString();
+        final Sort mockSort = transactionService.getTransactionDateDescendingSort();
+        Mockito.when(transactionRepository.findByAccountId(mockAccountId, mockSort)).thenReturn(Collections.emptyList());
+
+        final BigDecimal actualValue = transactionService.getCurrentBalance(mockAccountId);
+        Assertions.assertThat(actualValue).isEqualTo(BigDecimal.ZERO);
+
+    }
+
+    @Test
+    public void testGetCurrentBalanceWithTransactions() {
+        List<Transaction> mockTransactions = new ArrayList<>();
+        mockTransactions.add(randomObject.nextObject(Transaction.class));
+        mockTransactions.add(randomObject.nextObject(Transaction.class));
+        mockTransactions.add(randomObject.nextObject(Transaction.class));
+        final String mockAccountId =  UUID.randomUUID().toString();
+        final Sort mockSort = transactionService.getTransactionDateDescendingSort();
+
+        Mockito.when(transactionRepository.findByAccountId(mockAccountId, mockSort)).thenReturn(mockTransactions);
+
+        final BigDecimal actualValue = transactionService.getCurrentBalance(mockAccountId);
+        Assertions.assertThat(actualValue).isEqualTo(mockTransactions.get(0).getAccountBalance());
+        Assertions.assertThat(actualValue).isNotEqualTo(mockTransactions.get(1).getAccountBalance());
+        Assertions.assertThat(actualValue).isNotEqualTo(mockTransactions.get(2).getAccountBalance());
+    }
+
+    @Test
+    public void testUpdateCategories() {
+        final String filterString = "testFilter";
+        final String shortDescription = "test short description";
+        final UiCategory category = new UiCategory(filterString, shortDescription);
+        final List<String> transactionIds = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            transactionIds.add(UUID.randomUUID().toString());
+        }
+        final String accountId = UUID.randomUUID().toString();
+        List<Transaction> mockTransactions = generateMockTransactions(transactionIds, accountId);
+
+        Mockito.when(transactionRepository.findByIdInAndAccountId(transactionIds, accountId)).thenReturn(mockTransactions);
+
+        final List<Transaction> actualTransactions = transactionService.updateTransactionCategory(accountId, transactionIds, category);
+
+        for (int i = 0; i < transactionIds.size(); i++) {
+            Assertions.assertThat(actualTransactions.get(i).getCategoryName()).isEqualTo(shortDescription);
+            Assertions.assertThat(actualTransactions.get(i).getCategoryFilter()).isEqualTo(filterString);
+        }
+    }
     private List<Transaction> generateMockTransactions(final List<String> transactionIds, final String accountId) {
         final List<Transaction> mockTransactions = new ArrayList<>();
         for (int i = 0; i < transactionIds.size(); i++) {

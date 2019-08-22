@@ -24,9 +24,7 @@ public class BudgetApplicationTests {
 //
 //    @MockBean
 //    private FileUploadService fileUploadService;
-//
-//    @MockBean
-//    private TransactionProcessor transactionProcessor;
+
 
     @Autowired
     private FileUploadController fileUploadController;
