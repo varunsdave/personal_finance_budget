@@ -348,6 +348,34 @@ public class TransactionServiceTests {
         Assertions.assertThat(actualList.get(11).getAccountBalance()).isEqualTo(BigDecimal.valueOf(945.0)); // 990 + 45 + 10 - 100
     }
 
+    @Test
+    public void testGetAllTransactionsByAccount() {
+        final String accountId = UUID.randomUUID().toString();
+
+        List<Transaction> transactions = generateMockTransactions(accountId);
+        Mockito.when(transactionRepository.findByAccountId(accountId, transactionService.getTransactionDateDescendingSort()))
+                .thenReturn(transactions);
+
+        List<Transaction> actual = transactionService.getAllTransactionsByAccount(accountId);
+
+        Assertions.assertThat(actual.size()).isEqualTo(transactions.size());
+        Mockito.verify(transactionRepository).findByAccountId(accountId, transactionService.getTransactionDateDescendingSort());
+    }
+
+    @Test
+    public void testGetAllTransactionsByType() {
+        final String accountId = UUID.randomUUID().toString();
+        final String type = "income";
+        List<Transaction> transactions = generateMockTransactions(accountId);
+        Mockito.when(transactionRepository.findByAccountIdAndType(accountId, type))
+                .thenReturn(transactions);
+
+        List<Transaction> actual = transactionService.getTransactionsByType(type, accountId);
+
+        Assertions.assertThat(actual.size()).isEqualTo(transactions.size());
+        Mockito.verify(transactionRepository).findByAccountIdAndType(accountId, type);
+    }
+
     private List<UiTransaction> generateMockUiTransactions(final int size) {
         final List<UiTransaction> transactionList = new ArrayList<>();
         final UiCategory category = randomObject.nextObject(UiCategory.class);
