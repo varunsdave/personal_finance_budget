@@ -38,12 +38,10 @@ public class TransactionService {
         if (previousTransactionsList.isEmpty()) {
             // this is the first transaction
             BigDecimal accountBalance;
-            if (t.getType().equals(INCOME)) {
+            if (t.getType().equals(INCOME) || t.getType().equals(BALANCE)) {
                 accountBalance = BigDecimal.valueOf(uiTransaction.getAmount());
-            } else if (t.getType().equals(EXPENSE)) {
-                accountBalance = BigDecimal.valueOf(uiTransaction.getAmount()).multiply(BigDecimal.valueOf(-1.0));
             } else {
-                accountBalance = t.getAmount();
+                accountBalance = BigDecimal.valueOf(uiTransaction.getAmount()).multiply(BigDecimal.valueOf(-1.0));
             }
             t.setAccountBalance(accountBalance);
         } else {

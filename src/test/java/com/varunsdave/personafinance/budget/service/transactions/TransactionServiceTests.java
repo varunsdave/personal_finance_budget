@@ -390,7 +390,7 @@ public class TransactionServiceTests {
     }
 
     @Test
-    public void testCreateWithNoOtherTransactions() {
+    public void testCreateWithIncomeAndNoOtherTransactions() {
         final String accountId = UUID.randomUUID().toString();
         Mockito.when(accountRepository.findById(accountId))
                 .thenReturn(Optional.of(randomObject.nextObject(Account.class)));
@@ -410,8 +410,52 @@ public class TransactionServiceTests {
         final Transaction actualTransaction = transactionService.create(incomeTest, accountId);
 
         Assertions.assertThat(actualTransaction.getAccountBalance()).isEqualTo(BigDecimal.valueOf(incomeTest.getAmount()));
+    }
 
+    @Test
+    public void testCreateWithExpenseAndNoOtherTransactions() {
+        final String accountId = UUID.randomUUID().toString();
+        Mockito.when(accountRepository.findById(accountId))
+                .thenReturn(Optional.of(randomObject.nextObject(Account.class)));
 
+        final UiTransaction incomeTest = new UiTransaction();
+        incomeTest.setCategory(randomObject.nextObject(UiCategory.class));
+        incomeTest.setType("expense");
+        incomeTest.setTransactionDate(new Date());
+        incomeTest.setAmount(30.0);
+
+        Mockito.when(transactionRepository.findByAccountIdAndTransactionDateIsLessThanEqual(accountId, incomeTest.getTransactionDate()))
+                .thenReturn(Collections.emptyList());
+
+        Mockito.when(transactionRepository.findByAccountIdAndTransactionDateIsGreaterThanEqual(accountId, incomeTest.getTransactionDate()))
+                .thenReturn(Collections.emptyList());
+
+        final Transaction actualTransaction = transactionService.create(incomeTest, accountId);
+
+        Assertions.assertThat(actualTransaction.getAccountBalance().doubleValue()).isEqualTo((-1.0 * incomeTest.getAmount()));
+    }
+
+    @Test
+    public void testCreateWithBalanceAndNoOtherTransactions() {
+        final String accountId = UUID.randomUUID().toString();
+        Mockito.when(accountRepository.findById(accountId))
+                .thenReturn(Optional.of(randomObject.nextObject(Account.class)));
+
+        final UiTransaction incomeTest = new UiTransaction();
+        incomeTest.setCategory(randomObject.nextObject(UiCategory.class));
+        incomeTest.setType("balance");
+        incomeTest.setTransactionDate(new Date());
+        incomeTest.setAmount(30.0);
+
+        Mockito.when(transactionRepository.findByAccountIdAndTransactionDateIsLessThanEqual(accountId, incomeTest.getTransactionDate()))
+                .thenReturn(Collections.emptyList());
+
+        Mockito.when(transactionRepository.findByAccountIdAndTransactionDateIsGreaterThanEqual(accountId, incomeTest.getTransactionDate()))
+                .thenReturn(Collections.emptyList());
+
+        final Transaction actualTransaction = transactionService.create(incomeTest, accountId);
+
+        Assertions.assertThat(actualTransaction.getAccountBalance()).isEqualTo(BigDecimal.valueOf(incomeTest.getAmount()));
     }
 
     private List<UiTransaction> generateMockUiTransactions(final int size) {
