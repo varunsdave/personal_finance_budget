@@ -12,6 +12,7 @@ plugins {
     id "org.sonarqube" version "2.7"
 //    id "io.freefair.lombok" version "3.1.0"
     id 'java'
+
 }
 
 apply plugin: 'jacoco'
@@ -53,7 +54,6 @@ test {
         includeEngines 'junit-jupiter', 'junit-vintage'
     }
 }
-
 
 
 dependencies {

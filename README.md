@@ -25,16 +25,39 @@ Ideally, the front end and backend can be hosted separately. Just requires some 
 
 ## Requirements
 
-* Install a mongodb
+* Install a mongodb or ensure a mongodb is available.
+* Ensure java 12 is installed on your computer
+* Node package manager. NPM [https://www.npmjs.com/get-npm]
 * Update application.properties with mongodb uri
 
 ## Usage
-1. Provide Db connection settings as per readme
-2. Start the spring boot application using IDE. Alternatively, you can build using gradle and run the server.  
-3. Visit localhost:8080/swagger-ui.html for the endpoints supported
+
+Note, this application requires some setup. The simplest instructions for backend and front end are specified first. 
+
+### Simple backend startup
+
+1. Clone this repository and navigate to the directory.
+2. Ensure mongodb server is running
+3. Open a terminal or cmd and navigate to the the repository directory. 
+4. Run one  the following command
+
+If you are running on default mongodb port locally
+```
+java -jar budget-{version}.jar
+```
+
+If mongodb is running elsewhere. (Note, the authenticated credentials aren't supported atm)
+```
+java -jar budget-{version}.jar --spring.data.mongodb.host={yourHost} --spring.data.mongodb.port={yourPort}
+```
+
+    ** {version} - Version of the budget app. 
+    ** (yourHost) - mongodb server host
+    ** {yourPort} - mongodb server port
+
+The server should now be started. You can visit [http://localhost:8080/swagger-ui.html] to view the available APIS
 
 ### start front end
-Ensure you have npm installed. [https://www.npmjs.com/get-npm]
 1. navigate to frontEndClient
 2. run install && npm start
 3. Navigate to localhost:4200
