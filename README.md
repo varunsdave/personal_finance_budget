@@ -61,3 +61,7 @@ The server should now be started. You can visit [http://localhost:8080/swagger-u
 1. navigate to frontEndClient
 2. run install && npm start
 3. Navigate to localhost:4200
+
+If this has helped you, you can support this project here.
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2SJP2FPZN7VXA)
