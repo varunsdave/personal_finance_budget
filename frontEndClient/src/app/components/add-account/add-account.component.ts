@@ -20,6 +20,7 @@ export class AddAccountComponent implements OnInit {
 
   accounts: Account[] = [];
   acountsDs: MatTableDataSource<Account>;
+
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -44,9 +45,8 @@ export class AddAccountComponent implements OnInit {
       purpose: this.newAccountForm.value.accountTypeCtrl
     };
     this.restClientService.createAccount(newAccount).subscribe((data) => {
-      const accountsCopy: Account[] = JSON.parse(JSON.stringify(this.accounts));
-      accountsCopy.push(data);
-      this.acountsDs = new MatTableDataSource(accountsCopy);
+      this.accounts.push(data);
+      this.acountsDs = new MatTableDataSource(this.accounts);
     });
   }
 

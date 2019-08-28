@@ -164,7 +164,10 @@ export class TransactionListComponent implements OnInit {
 
     this.restClientService
       .addTransaction(newTransaction, this.selectedAccountId)
-      .subscribe(t => this.transactions.push(t));
+      .subscribe(t =>  {
+        this.transactions.push(t)
+        this.datasource = new MatTableDataSource(this.transactions);
+      });
   }
 
   public addExpense() {
@@ -181,7 +184,10 @@ export class TransactionListComponent implements OnInit {
     };
     this.restClientService
       .addTransaction(newTransaction, this.selectedAccountId)
-      .subscribe(t => this.transactions.push(t));
+      .subscribe(t =>  {
+        this.transactions.push(t)
+        this.datasource = new MatTableDataSource(this.transactions);
+      });
   }
 
   public addBalance() {
@@ -198,7 +204,10 @@ export class TransactionListComponent implements OnInit {
     };
     this.restClientService
       .addTransaction(newTransaction, this.selectedAccountId)
-      .subscribe(t => this.transactions.push(t));
+      .subscribe(t => {
+        this.transactions.push(t)
+        this.datasource = new MatTableDataSource(this.transactions);
+      });
   }
 
   public showAddTransactionForm() {

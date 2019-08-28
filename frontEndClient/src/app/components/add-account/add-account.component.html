@@ -16,7 +16,7 @@
 <div>
   <div class="example-container mat-elevation-z8">
     <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
-    <table mat-table [dataSource]="accounts" matSort (matSortChange)="sortData($event)">
+    <table mat-table [dataSource]="acountsDs" matSort (matSortChange)="sortData($event)">
 
       <ng-container matColumnDef="Name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="accountName">Name</th>

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,12 +29,16 @@ public class TransactionService {
     private static final String BALANCE = "balance";
 
     public Transaction create(UiTransaction uiTransaction, String accountId) {
-        if (accountRepository.findById(accountId).isEmpty()) {
+        if (accountRepository.findById(UUID.fromString(accountId)).isEmpty()) {
             throw new InvalidParameterException();
         }
         final Transaction t = convertFromUiTransaction(uiTransaction, accountId);
 
-        final List<Transaction> previousTransactionsList = transactionRepository.findByAccountIdAndTransactionDateIsLessThanEqual(accountId, uiTransaction.getTransactionDate());
+        final List<Transaction> previousTransactionsList = transactionRepository
+                .findByAccountIdAndTransactionDateIsLessThanEqual(accountId, uiTransaction.getTransactionDate())
+                .stream()
+                .sorted(Comparator.comparing(Transaction::getTransactionDate))
+                .collect(Collectors.toList());
 
         if (previousTransactionsList.isEmpty()) {
             // this is the first transaction
@@ -59,7 +64,10 @@ public class TransactionService {
 
         // get last transaction from that date
         final List<Transaction> nextTransactions = transactionRepository
-                .findByAccountIdAndTransactionDateIsGreaterThanEqual(accountId, uiTransaction.getTransactionDate());
+                .findByAccountIdAndTransactionDateIsGreaterThanEqual(accountId, uiTransaction.getTransactionDate())
+                .stream()
+                .sorted(Comparator.comparing(Transaction::getTransactionDate))
+                .collect(Collectors.toList());
 
         updateTransactionBalances(t.getAccountBalance(), nextTransactions);
 

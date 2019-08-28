@@ -28,7 +28,12 @@ public class AccountService {
 
     public Account mapUiAccountToAccount(UiAccount account) {
         final Account newAccount  = new Account();
-        newAccount.setId(UUID.fromString(account.getId()));
+        try {
+            newAccount.setId(UUID.fromString(account.getId()));
+        } catch (IllegalArgumentException illegalArgumentException) {
+            newAccount.setId(UUID.randomUUID());
+        }
+
         newAccount.setCreatedAt(account.getCreatedAt());
         newAccount.setName(account.getName());
         newAccount.setLastUpdated(account.getLastUpdated());
