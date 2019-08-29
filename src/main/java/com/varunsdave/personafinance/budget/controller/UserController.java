@@ -34,7 +34,7 @@ public class UserController {
     @ApiOperation("Updates transaction category for this account")
     public List<UiTransaction> updateTransactions(@PathVariable String userId, @PathVariable String accountId,
                                                   @RequestBody UpdateCategory updateCategories) {
-        return transactionService.updateTransactionCategory(accountId, updateCategories.getTransactionIds(), updateCategories.getUiCategory())
+        return transactionService.updateTransactionCategory(accountId, List.of(updateCategories.getTransactionIds()), updateCategories.getUiCategory())
                 .stream().map(this::mapTransactionToUiTransaction).collect(Collectors.toList());
     }
 

@@ -25,6 +25,8 @@ export class AccountOverviewComponent implements OnInit {
   accountSelectControl: FormControl;
   accountDateRange: FormControl;
 
+  noAccounts: boolean = false;
+
   dailyBalance = [
   ];
 
@@ -40,7 +42,12 @@ export class AccountOverviewComponent implements OnInit {
     this.accountOverViewForm = this.setupAccountOverviewForm();
     this.accountName = "Sample Test Account";
     this.restClientService.getAccounts().subscribe((accounts) => {
-      this.accountList = accounts;
+      if (accounts === null || accounts.length === 0) {
+        this.noAccounts = true;
+      } else {
+        this.accountList = accounts;
+      }
+
     })
 
   }

@@ -1,33 +1,37 @@
-<div class="header-bar-inputs">
-  <form [formGroup]="accountOverViewForm" >
-    <mat-form-field class="header-bar-mat-forms">
-      <mat-label>Select Account</mat-label>
-      <mat-select required formControlName="accountSelectControl" (selectionChange)="selectAccount($event.value)">
-        <mat-option *ngFor="let account of accountList" [value]="account.id">{{account.name}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field class="header-bar-mat-forms">
-      <mat-label>Select Date Range</mat-label>
-      <mat-select required formControlName="accountDateRange" (selectionChange)="dateRangeChange($event.value)">
-        <mat-option [value]="'all'">All</mat-option>
-        <mat-option [value]="'currentYear'">Current Year</mat-option>
-        <mat-option [value]="'currentMonth'">Current Month</mat-option>
-        <mat-option [value]="'custom'">Custom Date Range</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field *ngIf="showCustomDateRange" class="header-bar-mat-forms">
-      <input matInput [required]="true"  formControlName="startDate" [matDatepicker]="startDatePicker" placeholder="Choose start date" >
-      <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
-      <mat-datepicker #startDatePicker disabled="false"></mat-datepicker>
-    </mat-form-field>
-    <mat-form-field *ngIf="showCustomDateRange" class="header-bar-mat-forms">
-      <input matInput [required]="true"  formControlName="endDate" [matDatepicker]="endDatePicker" placeholder="Choose end date" >
-      <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
-      <mat-datepicker #endDatePicker disabled="false"></mat-datepicker>
-    </mat-form-field>
-  </form>
+<div *ngIf="noAccounts">
+  <mat-label>There are no Accounts created. Please Create one from the Left Side Menu</mat-label>
 </div>
-<div class="data-container">
+<div *ngIf="!noAccounts"class="header-bar-inputs">
+    <form [formGroup]="accountOverViewForm" >
+      <mat-form-field class="header-bar-mat-forms">
+        <mat-label>Select Account</mat-label>
+        <mat-select required formControlName="accountSelectControl" (selectionChange)="selectAccount($event.value)">
+          <mat-option *ngFor="let account of accountList" [value]="account.id">{{account.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="header-bar-mat-forms">
+        <mat-label>Select Date Range</mat-label>
+        <mat-select required formControlName="accountDateRange" (selectionChange)="dateRangeChange($event.value)">
+          <mat-option [value]="'all'">All</mat-option>
+<!--          <mat-option [value]="'currentYear'">Current Year</mat-option>-->
+<!--          <mat-option [value]="'currentMonth'">Current Month</mat-option>-->
+<!--          <mat-option [value]="'custom'">Custom Date Range</mat-option>-->
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field *ngIf="showCustomDateRange" class="header-bar-mat-forms">
+        <input matInput [required]="true"  formControlName="startDate" [matDatepicker]="startDatePicker" placeholder="Choose start date" >
+        <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #startDatePicker disabled="false"></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field *ngIf="showCustomDateRange" class="header-bar-mat-forms">
+        <input matInput [required]="true"  formControlName="endDate" [matDatepicker]="endDatePicker" placeholder="Choose end date" >
+        <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #endDatePicker disabled="false"></mat-datepicker>
+      </mat-form-field>
+    </form>
+
+</div>
+<div *ngIf="!noAccounts" class="data-container">
   <div>
   <mat-card class="mat-card">
     <mat-card-header >

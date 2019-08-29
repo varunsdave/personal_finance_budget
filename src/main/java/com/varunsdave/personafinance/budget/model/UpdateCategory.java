@@ -8,5 +8,5 @@ import java.util.List;
 public class UpdateCategory {
 
     private final UiCategory uiCategory;
-    private final List<String> transactionIds;
+    private final String[] transactionIds;
 }
